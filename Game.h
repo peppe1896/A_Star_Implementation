@@ -20,8 +20,6 @@ public:
     Game();
     ~Game();
 
-    //Funzioni ricorsive.
-    //updatePos è chiamata da update per aggiornare la posizione del tipo
     void updatePos();
     void update();
     void render();
