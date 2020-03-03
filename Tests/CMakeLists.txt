@@ -9,4 +9,5 @@ set(SOURCE_FILES Test1.h Test1.cpp)
 
 #core è la libreria che abbiamo definito dentro il cmake iniziale del progetto
 #che altro non contiene che tutti i cpp e h files
+
 target_link_libraries(gootest ${GTEST_BOTH_LIBRARIES} core)

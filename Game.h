@@ -25,7 +25,6 @@ public:
     void render();
 
     void run();
-
 };
 
 

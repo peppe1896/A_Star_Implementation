@@ -9,7 +9,7 @@ set(SOURCE_FILES main.cpp Game.cpp Game.h)
 set(CMAKE_MODULE_PATH "${SFML_ROOT}/lib/cmake/SFML")
 find_package(SFML 2.5 COMPONENTS graphics audio system audio network REQUIRED)
 
-if(WIN32)
+if(WIN32) #FIX: non funziona su Windows
     add_subdirectory(Tests/lib/googletest-master)
     include_directories(Tests/lib/googletest-master/googlemock/include)
     include_directories(Tests/lib/googletest-master/googletest/include)
