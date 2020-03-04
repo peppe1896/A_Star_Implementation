@@ -7,6 +7,7 @@
 #include <SFML/Audio.hpp>
 
 #include <iostream>
+#include "player.h"
 
 class Game
 {
@@ -14,8 +15,8 @@ private:
     sf::RenderWindow* window;
     sf::Event event;
 
-    sf::Vector2f posPlayer;
-    sf::RectangleShape player;
+    player* hero;
+
 
 public:
     Game();
