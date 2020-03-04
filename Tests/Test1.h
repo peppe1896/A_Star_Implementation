@@ -7,9 +7,18 @@
 
 #include "gtest/gtest.h"
 
-int main(int argc, char* argv)
+class myFirstTest : ::testing::test
 {
+public:
+    myFirstTest()
+    {
 
+    }
+};
+
+int main(int argv, char* argc)
+{
+    return RUN_ALL_TESTS();
 }
 
 #endif //LAB_PROGR_2_TEST1_H

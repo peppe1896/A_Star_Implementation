@@ -1,7 +1,3 @@
-//
-// Created by Giuseppe on 28/02/2020.
-//
-
 #include "Game.h"
 
 Game::Game()
@@ -17,7 +13,8 @@ Game::Game()
     player.setPosition(posPlayer);
 }
 
-Game::~Game(){
+Game::~Game()
+{
 
 }
 

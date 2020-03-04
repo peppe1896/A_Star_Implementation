@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project(LabProgrammazione)
 
 set(CMAKE_CXX_STANDARD 11)
-set(SOURCE_FILES main.cpp Game.cpp Game.h)
+set(SOURCE_FILES main.cpp Game.cpp Game.h Implementation.cpp)
 
 #NON è necessario impostare SFML_ROOT
 
@@ -23,7 +23,7 @@ endif()
 
 add_executable(LabProgrammazione ${SOURCE_FILES})
 
-add_library(core ${SOURCE_FILES})
+add_library(core ${SOURCE_FILES} )
 target_link_libraries(LabProgrammazione sfml-window sfml-graphics sfml-system sfml-audio sfml-network)
 
 target_link_libraries(LabProgrammazione gtest gtest_main)

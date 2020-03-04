@@ -8,7 +8,8 @@
 
 #include <iostream>
 
-class Game {
+class Game
+{
 private:
     sf::RenderWindow* window;
     sf::Event event;
