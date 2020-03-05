@@ -42,7 +42,7 @@ void player::drawPlayer(sf::RenderTarget* target)
 
 void player::reach()
 {
-    std:out << "Commit di prova" << std::endl;
+    //funzione sbagliata
 }
 
 void player::handleInput()
