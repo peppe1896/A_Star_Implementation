@@ -2,6 +2,7 @@
 // Created by giuseppe on 04/03/20.
 //
 
+#include <iostream>
 #include "player.h"
 
 player::player()
@@ -10,7 +11,9 @@ player::player()
 }
 
 player::~player()
-= default;
+{
+
+}
 
 void player::initPlayer()
 {
@@ -39,7 +42,7 @@ void player::drawPlayer(sf::RenderTarget* target)
 
 void player::reach()
 {
-    //Non va implementata qui ma nelle altre entità che devono raggiungere il player
+    std:out << "Commit di prova" << std::endl;
 }
 
 void player::handleInput()

@@ -19,7 +19,7 @@ private:
 public:
     player();
 
-    ~player() override;
+    virtual ~player();
 
     void reach(); //Va implementata nelle altre entità
 
