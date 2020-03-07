@@ -1,10 +1,9 @@
-/*
- Sample code from https://www.redblobgames.com/pathfinding/a-star/
- Copyright 2014 Red Blob Games <redblobgames@gmail.com>
+//
+// Created by giuseppe on 06/03/20.
+//
 
- Feel free to use this code in your own projects, including commercial projects
- License: Apache v2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
-*/
+#ifndef LABPROGRAMMAZIONE_A_STAR_H
+#define LABPROGRAMMAZIONE_A_STAR_H
 
 #include <iostream>
 #include <iomanip>
@@ -18,7 +17,8 @@
 #include <algorithm>
 #include <cstdlib>
 
-struct SimpleGraph {
+struct SimpleGraph
+{
     std::unordered_map<char, std::vector<char> > edges;
 
     std::vector<char> neighbors(char id) {
@@ -34,7 +34,8 @@ SimpleGraph example_graph {{
                                    {'E', {'B'}}
                            }};
 
-struct GridLocation {
+struct GridLocation
+{
     int x, y;
 };
 
@@ -49,8 +50,8 @@ namespace std {
     };
 }
 
-
-struct SquareGrid {
+struct SquareGrid
+{
     static std::array<GridLocation, 4> DIRS;
 
     int width, height;
@@ -90,43 +91,46 @@ struct SquareGrid {
 std::array<GridLocation, 4> SquareGrid::DIRS =
         {GridLocation{1, 0}, GridLocation{0, -1}, GridLocation{-1, 0}, GridLocation{0, 1}};
 
-// Helpers for GridLocation
 
-bool operator == (GridLocation a, GridLocation b) {
+bool operator == (GridLocation a, GridLocation b)
+{
     return a.x == b.x && a.y == b.y;
 }
 
-bool operator != (GridLocation a, GridLocation b) {
+bool operator != (GridLocation a, GridLocation b)
+{
     return !(a == b);
 }
 
-bool operator < (GridLocation a, GridLocation b) {
+bool operator < (GridLocation a, GridLocation b)
+{
     return std::tie(a.x, a.y) < std::tie(b.x, b.y);
 }
 
-std::basic_iostream<char>::basic_ostream& operator<<(std::basic_iostream<char>::basic_ostream& out, const GridLocation& loc)
+std::basic_iostream<char>::basic_ostream& operator << (std::basic_iostream<char>::basic_ostream& out, const GridLocation& loc)
 {
     out << '(' << loc.x << ',' << loc.y << ')';
     return out;
 }
 
-// This outputs a grid. Pass in a distances map if you want to print
-// the distances, or pass in a point_to map if you want to print
-// arrows that point to the parent location, or pass in a path vector
-// if you want to draw the path.
-
 template<class Graph>
 void draw_grid(const Graph& graph, int field_width,
                std::unordered_map<GridLocation, double>* distances=nullptr,
                std::unordered_map<GridLocation, GridLocation>* point_to=nullptr,
-               std::vector<GridLocation>* path=nullptr) {
-    for (int y = 0; y != graph.height; ++y) {
-        for (int x = 0; x != graph.width; ++x) {
+               std::vector<GridLocation>* path=nullptr)
+{
+    for (int y = 0; y != graph.height; ++y)
+    {
+        for (int x = 0; x != graph.width; ++x)
+        {
             GridLocation id {x, y};
             std::cout << std::left << std::setw(field_width);
-            if (graph.walls.find(id) != graph.walls.end()) {
-                std::cout << std::string(field_width, '#');
-            } else if (point_to != nullptr && point_to->count(id)) {
+            if (graph.walls.find(id) != graph.walls.end())
+            {
+            std::cout << std::string(field_width, '#');
+            }
+            else if (point_to != nullptr && point_to->count(id))
+            {
                 GridLocation next = (*point_to)[id];
                 if (next.x == x + 1) { std::cout << "> "; }
                 else if (next.x == x - 1) { std::cout << "< "; }
@@ -156,15 +160,6 @@ void add_rect(SquareGrid& grid, int x1, int y1, int x2, int y2)
     }
 }
 
-SquareGrid make_diagram1() {
-    SquareGrid grid(30, 15);
-    add_rect(grid, 3, 3, 5, 12);
-    add_rect(grid, 13, 4, 15, 15);
-    add_rect(grid, 21, 0, 23, 7);
-    add_rect(grid, 23, 5, 26, 7);
-    return grid;
-}
-
 struct GridWithWeights: SquareGrid {
     std::unordered_set<GridLocation> forests;
     GridWithWeights(int w, int h): SquareGrid(w, h) {}
@@ -172,22 +167,6 @@ struct GridWithWeights: SquareGrid {
         return forests.find(to_node) != forests.end()? 5 : 1;
     }
 };
-
-GridWithWeights make_diagram4() {
-    GridWithWeights grid(10, 10);
-    add_rect(grid, 1, 7, 4, 9);
-    typedef GridLocation L;
-    grid.forests = std::unordered_set<GridLocation> {
-            L{3, 4}, L{3, 5}, L{4, 1}, L{4, 2},
-            L{4, 3}, L{4, 4}, L{4, 5}, L{4, 6},
-            L{4, 7}, L{4, 8}, L{5, 1}, L{5, 2},
-            L{5, 3}, L{5, 4}, L{5, 5}, L{5, 6},
-            L{5, 7}, L{5, 8}, L{6, 2}, L{6, 3},
-            L{6, 4}, L{6, 5}, L{6, 6}, L{6, 7},
-            L{7, 3}, L{7, 4}, L{7, 5}
-    };
-    return grid;
-}
 
 template<typename T, typename priority_t>
 struct PriorityQueue {
@@ -210,56 +189,8 @@ struct PriorityQueue {
     }
 };
 
-template<typename Location, typename Graph>
-void dijkstra_search
-        (Graph graph,
-         Location start,
-         Location goal,
-         std::unordered_map<Location, Location>& came_from,
-         std::unordered_map<Location, double>& cost_so_far)
+inline double heuristic(GridLocation a, GridLocation b)
 {
-    PriorityQueue<Location, double> frontier;
-    frontier.put(start, 0);
-
-    came_from[start] = start;
-    cost_so_far[start] = 0;
-
-    while (!frontier.empty()) {
-        Location current = frontier.get();
-
-        if (current == goal) {
-            break;
-        }
-
-        for (Location next : graph.neighbors(current)) {
-            double new_cost = cost_so_far[current] + graph.cost(current, next);
-            if (cost_so_far.find(next) == cost_so_far.end()
-                || new_cost < cost_so_far[next]) {
-                cost_so_far[next] = new_cost;
-                came_from[next] = current;
-                frontier.put(next, new_cost);
-            }
-        }
-    }
-}
-
-template<typename Location>
-std::vector<Location> reconstruct_path(
-        Location start, Location goal,
-        std::unordered_map<Location, Location> came_from
-) {
-    std::vector<Location> path;
-    Location current = goal;
-    while (current != start) {
-        path.push_back(current);
-        current = came_from[current];
-    }
-    path.push_back(start); // optional
-    std::reverse(path.begin(), path.end());
-    return path;
-}
-
-inline double heuristic(GridLocation a, GridLocation b) {
     return std::abs(a.x - b.x) + std::abs(a.y - b.y);
 }
 
@@ -296,3 +227,30 @@ void a_star_search
         }
     }
 }
+
+SquareGrid make_diagram1() {
+    SquareGrid grid(30, 15);
+    add_rect(grid, 3, 3, 5, 12);
+    add_rect(grid, 13, 4, 15, 15);
+    add_rect(grid, 21, 0, 23, 7);
+    add_rect(grid, 23, 5, 26, 7);
+    return grid;
+}
+
+GridWithWeights make_diagram4() {
+    GridWithWeights grid(10, 10);
+    add_rect(grid, 1, 7, 4, 9);
+    typedef GridLocation L;
+    grid.forests = std::unordered_set<GridLocation> {
+            L{3, 4}, L{3, 5}, L{4, 1}, L{4, 2},
+            L{4, 3}, L{4, 4}, L{4, 5}, L{4, 6},
+            L{4, 7}, L{4, 8}, L{5, 1}, L{5, 2},
+            L{5, 3}, L{5, 4}, L{5, 5}, L{5, 6},
+            L{5, 7}, L{5, 8}, L{6, 2}, L{6, 3},
+            L{6, 4}, L{6, 5}, L{6, 6}, L{6, 7},
+            L{7, 3}, L{7, 4}, L{7, 5}
+    };
+    return grid;
+}
+
+#endif //LABPROGRAMMAZIONE_A_STAR_H

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project(LabProgrammazione)
 
 set(CMAKE_CXX_STANDARD 11)
-set(SOURCE_FILES main.cpp Game.cpp Game.h Implementation.cpp entity.h player.cpp player.h)
+set(SOURCE_FILES main.cpp Game.cpp Game.h entity.h player.cpp player.h A_Star.h)
 
 #NON è necessario impostare SFML_ROOT
 

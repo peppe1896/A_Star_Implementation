@@ -14,18 +14,18 @@ class Game
 private:
     sf::RenderWindow* window;
     sf::Event event;
-
+    sf::VideoMode vMode;
     player* hero;
-
 
 public:
     Game();
     ~Game();
 
-    void updatePos();
     void update();
     void render();
 
+
+    sf::VideoMode getVideoMode();
     void run();
 };
 

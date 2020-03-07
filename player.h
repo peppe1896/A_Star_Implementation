@@ -10,18 +10,23 @@
 class player : public entity
 {
 private:
+    void check_bound();
+
     sf::Vector2f position;
 
     void initPlayer();
 
     sf::RectangleShape player_sprite;
 
+    sf::RenderWindow* windw;
+    sf::Vector2f window_size;
+
+
 public:
-    player();
 
-    virtual ~player();
+    player(sf::RenderWindow* target);
 
-    void reach(); //Va implementata nelle altre entità
+    ~player();
 
     void drawPlayer(sf::RenderTarget* target);
 

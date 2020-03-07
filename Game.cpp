@@ -2,10 +2,12 @@
 
 Game::Game()
 {
-    hero = new player();
-
-    this->window = new sf::RenderWindow(sf::VideoMode(800, 600), "Implementation A* search Alg.");
+    sf::VideoMode vMode(1360,800);
+    this->window = new sf::RenderWindow(vMode, "Implementation A* search Alg.", sf::Style::Default);
     this->window->setFramerateLimit((60));
+
+    hero = new player(window);
+
 }
 
 Game::~Game()
@@ -13,9 +15,26 @@ Game::~Game()
 
 }
 
-void Game::updatePos()
-{
+void Game::update() {
+    while (window->pollEvent(event))
+        if (event.type == sf::Event::Closed)
+            window->close();
+
     hero->handleInput();
+}
+
+void Game::render()
+{
+    window->clear();
+
+    hero->drawPlayer(this->window);
+
+    window->display();
+
+}
+
+sf::VideoMode Game::getVideoMode() {
+    return vMode;
 }
 
 void Game::run()
@@ -28,22 +47,4 @@ void Game::run()
         update();
         render();
     }
-}
-
-void Game::update() {
-    while (window->pollEvent(event))
-        if (event.type == sf::Event::Closed)
-            window->close();
-
-    updatePos();
-}
-
-void Game::render()
-{
-    window->clear();
-
-    hero->drawPlayer(this->window);
-
-    window->display();
-
 }
