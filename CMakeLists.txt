@@ -24,6 +24,6 @@ endif()
 add_executable(LabProgrammazione ${SOURCE_FILES})
 
 add_library(core ${SOURCE_FILES})
-target_link_libraries(LabProgrammazione sfml-window sfml-graphics sfml-system sfml-audio sfml-network)
 
+target_link_libraries(LabProgrammazione sfml-window sfml-graphics sfml-system sfml-audio sfml-network)
 target_link_libraries(LabProgrammazione gtest gtest_main)

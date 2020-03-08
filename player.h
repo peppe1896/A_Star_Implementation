@@ -14,17 +14,19 @@ private:
 
     sf::Vector2f position;
 
-    void initPlayer();
+    void initPlayer(float vel);
 
     sf::RectangleShape player_sprite;
 
     sf::RenderWindow* windw;
     sf::Vector2f window_size;
 
+    float velocity;
+
 
 public:
 
-    player(sf::RenderWindow* target);
+    player(sf::RenderWindow* target, float vel);
 
     ~player();
 
@@ -33,6 +35,8 @@ public:
     void move(sf::Vector2f pos) override;
 
     void handleInput();
+
+    void setVelocity(float velocity);
 
 };
 

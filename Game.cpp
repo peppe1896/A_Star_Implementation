@@ -6,7 +6,7 @@ Game::Game()
     this->window = new sf::RenderWindow(vMode, "Implementation A* search Alg.", sf::Style::Default);
     this->window->setFramerateLimit((60));
 
-    hero = new player(window);
+    hero = new player(window, 4.f);
 
     //set Background (map)
     if(!background_texture.loadFromFile("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Background/canvas.png"))
@@ -14,6 +14,7 @@ Game::Game()
 
     background.setSize(sf::Vector2f(vMode.width, vMode.height));
     background.setTexture(&background_texture);
+
 
 }
 
@@ -26,7 +27,6 @@ void Game::update() {
     while (window->pollEvent(event))
         if (event.type == sf::Event::Closed)
             window->close();
-
 
     hero->handleInput();
 }
