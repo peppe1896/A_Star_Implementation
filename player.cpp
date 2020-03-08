@@ -21,8 +21,8 @@ player::~player()
 void player::initPlayer()
 {
     //Imposto vettore posizione
-    position.x = 150.f;
-    position.y = 150.f;
+    position.x = window_size.x / 2 + player_sprite.getSize().x / 2;
+    position.y = window_size.y / 2 + player_sprite.getSize().y / 2;
 
     //Disegno rectangle shape
     player_sprite.setFillColor(sf::Color::Red);

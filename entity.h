@@ -9,11 +9,11 @@
 #include <SFML/Window.hpp>
 #include "SFML/System.hpp"
 
-class entity {
-
+class entity
+{
 public:
-    virtual void move(sf::Vector2f pos) = 0;
 
+    virtual void move(sf::Vector2f pos) = 0;
 
 };
 

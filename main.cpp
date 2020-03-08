@@ -1,4 +1,3 @@
-/*
 #include "Game.h"
 
 int main()
@@ -9,8 +8,8 @@ int main()
     game->run();
 
 }
-*/
 
+/*
 #include "A_Star.h"
 
 void breadth_first_search(SimpleGraph graph, char start) {
@@ -41,3 +40,5 @@ int main() {
 
     //a_star_search(example_graph, 'A', 'E');
 }
+
+ */

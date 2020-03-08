@@ -237,7 +237,8 @@ SquareGrid make_diagram1() {
     return grid;
 }
 
-GridWithWeights make_diagram4() {
+GridWithWeights make_diagram4()
+{
     GridWithWeights grid(10, 10);
     add_rect(grid, 1, 7, 4, 9);
     typedef GridLocation L;

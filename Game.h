@@ -12,17 +12,24 @@
 class Game
 {
 private:
+    //Frame
     sf::RenderWindow* window;
-    sf::Event event;
     sf::VideoMode vMode;
+    sf::Event event;
+
+    //Game Character
     player* hero;
+
+    //Background
+    sf::RectangleShape background;
+    sf::Texture background_texture;
 
 public:
     Game();
     ~Game();
 
     void update();
-    void render();
+    void render(sf::RenderTarget* target);
 
 
     sf::VideoMode getVideoMode();
