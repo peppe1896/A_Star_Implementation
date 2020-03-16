@@ -1,17 +1,5 @@
 #include "Game.h"
-
-int main()
-{
-
-    Game* game = new Game();
-
-    game->run();
-
-}
-
 /*
-#include "A_Star.h"
-
 void breadth_first_search(SimpleGraph graph, char start) {
     std::queue<char> frontier;
     frontier.push(start);
@@ -34,11 +22,14 @@ void breadth_first_search(SimpleGraph graph, char start) {
     }
 }
 
-
+*/
 int main() {
-    breadth_first_search(example_graph, 'A');
+  //  breadth_first_search(example_graph, 'A');
+
+    Game* game = new Game();
+
+    game->run();
 
     //a_star_search(example_graph, 'A', 'E');
 }
 
- */

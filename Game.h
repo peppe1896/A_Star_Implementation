@@ -1,13 +1,8 @@
 #ifndef LABPROGRCLION_GAME_H
 #define LABPROGRCLION_GAME_H
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Audio.hpp>
-
-#include <iostream>
 #include "player.h"
+#include "Node_map.h"
 
 class Game
 {
@@ -17,12 +12,16 @@ private:
     sf::VideoMode vMode;
     sf::Event event;
 
+    //Mappa
+    Node_map* mappa;
+
     //Game Character
     player* hero;
 
     //Background
     sf::RectangleShape background;
     sf::Texture background_texture;
+    bool show_bck;
 
 public:
     Game();
@@ -31,8 +30,6 @@ public:
     void update();
     void render(sf::RenderTarget* target);
 
-
-    sf::VideoMode getVideoMode();
     void run();
 };
 

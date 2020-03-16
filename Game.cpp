@@ -2,7 +2,8 @@
 
 Game::Game()
 {
-    sf::VideoMode vMode(1360,800);
+    vMode.width = 1024;
+    vMode.height = 1024;
     this->window = new sf::RenderWindow(vMode, "Implementation A* search Alg.", sf::Style::Default);
     this->window->setFramerateLimit((60));
 
@@ -14,8 +15,14 @@ Game::Game()
 
     background.setSize(sf::Vector2f(vMode.width, vMode.height));
     background.setTexture(&background_texture);
+    show_bck = true;
 
+    //Graph
+    //creo un oggetto Node_map che in teoria
+    //ha il grafo
 
+    //Devo creare un handle input per Node_map
+    mappa = new Node_map(window);
 }
 
 Game::~Game()
@@ -27,8 +34,14 @@ void Game::update() {
     while (window->pollEvent(event))
         if (event.type == sf::Event::Closed)
             window->close();
-
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
+                show_bck= false;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && sf::Keyboard::isKeyPressed(sf::Keyboard::B))
+                show_bck = true;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))// && sf::Keyboard::isKeyPressed(sf::Keyboard::B))
+            window->close();
     hero->handleInput();
+    mappa->update();
 }
 
 void Game::render(sf::RenderTarget* target)
@@ -38,28 +51,19 @@ void Game::render(sf::RenderTarget* target)
 
     target->clear();
 
-    target->draw(background);
+    if(show_bck)
+        target->draw(background);
 
     hero->drawPlayer(target);
-
+    mappa->render(target);
     window->display();
 
 }
 
-sf::VideoMode Game::getVideoMode()
-{
-    return vMode;
-}
-
 void Game::run()
 {
-    while (window->isOpen()){
-        while (window->pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window->close();
-            else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
-                    window->close();
-        }
+    while (window->isOpen())
+    {
         update();
         render(this->window);
     }
