@@ -23,6 +23,10 @@ private:
     sf::Texture background_texture;
     bool show_bck;
 
+    //di quanto spostare la mappa verso dx e verso sud
+    float offsetx;
+    float offsety;
+
 public:
     Game();
     ~Game();
@@ -30,6 +34,7 @@ public:
     void update();
     void render(sf::RenderTarget* target);
 
+    sf::VideoMode getVideoMode();
     void run();
 };
 

@@ -48,7 +48,21 @@ namespace std {
     };
 }
 
-class Node_map {
+class Node_map;
+
+class Tile
+{
+public:
+    sf::RectangleShape shape;
+
+public:
+    Tile(float x, float y, float width, float heigth);
+    sf::Vector2f getOrigin();
+
+};
+
+class Node_map
+{
 private:
     sf::Vector2i mousePosScreen;
     sf::Vector2i mousePosWindow;
@@ -59,15 +73,20 @@ private:
 
     sf::RenderWindow* window;
 
-    float gridSize;
+    float gridSizeX;
+    float gridSizeY;
+    std::vector<Tile*> tiles;
+
+    bool checkIntersect(Tile* rect);
 
 public:
     Node_map(sf::RenderWindow* window);
+    ~Node_map();
 
+    void addTile();
     void update();
-
     void render(sf::RenderTarget* target);
-
+    friend class Tile;
 };
 
 

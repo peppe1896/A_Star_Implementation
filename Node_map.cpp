@@ -12,58 +12,89 @@ Node_map::Node_map(sf::RenderWindow* window)
         std::cerr << "ERROR::NODE_MAP::COULD NOT LOAD FONT FOR MOUSE";
     mouse_text.setFont(mouse_font);
     mouse_text.setString("MOUSE POS");
-    mouse_text.setPosition(15.f,15.f);
     mouse_text.setFillColor(sf::Color::White);
     this->window = window;
     mousePosGrid = sf::Mouse::getPosition();
-    //mouseCoordinates = target->mapPixelToCoords(mousePosGrid);
+    mouse_text.setCharacterSize(16);
 
-    gridSize = 100.f;
+    //Necessari 2GridSize, uno per x, e uno per Y
+    gridSizeX = 21.f;
+    gridSizeY = 11.f;
 
 }
 
 void Node_map::update()
 {
-
-    /*std::string strx = "x: " + mousePosInt.x;
-    std::string stry = " || y: " + mousePosInt.y;
-
-
-    mousePosGrid = sf::Mouse::getPosition(target);
-    mouseCoordinates = target->mapPixelToCoords(mousePosGrid);
-    //mouse_text.setString(strx + stry);
-    mouse_text.setPosition(0.f,0.f);
-    mouse_text.setFillColor(sf::Color::White);
-    std::cout << mouseCoordinates.x << " -- " << mouseCoordinates.y << std::endl;
-*/
-    //
     this->mousePosScreen = sf::Mouse::getPosition();
     this->mousePosWindow = sf::Mouse::getPosition(*window);
     this->mousePosView = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
     this->mousePosGrid =
             sf::Vector2i(
-                    static_cast<int>(this->mousePosView.x) / static_cast<int>(this->gridSize),
-                    static_cast<int>(this->mousePosView.y) / static_cast<int>(this->gridSize)
+                    static_cast<int>(this->mousePosView.x) / static_cast<int>(this->gridSizeX),
+                    static_cast<int>(this->mousePosView.y) / static_cast<int>(this->gridSizeY)
             );
-    std::cout << mousePosGrid.x << " -- " << mousePosGrid.y << " || Posizione in griglia" <<std::endl;
-    std::cout << std::endl;
-    std::cout << mousePosWindow.x << " -- " << mousePosWindow.y << " || Posizione in  window" << std::endl;
-    std::cout << std::endl;
-    std::cout << mousePosScreen.x << " -- " << mousePosScreen.y << " || Posizione nello schermo" <<std::endl;
-
 }
 
 void Node_map::render(sf::RenderTarget* target)
 {
     //REMOVE LATER!!!
-    //sf::Text mouseText;
     mouse_text.setPosition(this->mousePosView.x, this->mousePosView.y - 10);
-    //mouseText.setFont(this->font);
-    mouse_text.setCharacterSize(16);
+    //mouse_text.setCharacterSize(16);
     std::stringstream ss;
     ss << this->mousePosView.x << " " << this->mousePosView.y;
     mouse_text.setString(ss.str());
-    //target->draw(mouseText);
     target->draw(mouse_text);
 
+    for(const auto itr : tiles)
+        target->draw(itr->shape);
+
 }
+
+bool Node_map::checkIntersect(Tile* rect) {
+    for(auto itr : tiles)
+    {
+            if(itr->getOrigin() == rect->getOrigin())
+                return true;
+    }
+    return false;
+}
+
+void Node_map::addTile()
+{
+    auto* tile = new Tile(static_cast<float>(mousePosGrid.x), static_cast<float>(mousePosGrid.y), gridSizeX, gridSizeY);
+    if (checkIntersect(tile))
+    {
+        std::cout << "ERROR::TILE già presente" << std::endl;
+    }
+    else
+    {
+        tiles.push_back(tile);
+        std::cout << "AGGIUNTA TILE IN " << tile->getOrigin().x << "||" << tile->getOrigin().x << std::endl;
+    }
+    //std::cout << tiles.size() <<std::endl;
+}
+
+Node_map::~Node_map()
+{
+    for(auto itr : tiles)
+        delete itr;
+}
+
+
+//======================================================================================================================
+
+Tile::Tile(float x, float y, float width, float heigth)
+{
+    shape.setOrigin(sf::Vector2f(x,y));
+    shape.setFillColor(sf::Color::Green);
+    shape.setOutlineThickness(1.f);
+    shape.setSize(sf::Vector2f(width, heigth));
+}
+
+sf::Vector2f Tile::getOrigin()
+{
+    return sf::Vector2f(shape.getOrigin());
+}
+
+
+
