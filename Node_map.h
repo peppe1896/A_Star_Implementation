@@ -53,13 +53,12 @@ class Node_map;
 class Tile
 {
 public:
+    Tile(float x, float y, float width, float heigth);
+    sf::Vector2f getPosition();
     sf::RectangleShape shape;
     sf::Texture tex;
 
-public:
-    Tile(float x, float y, float width, float heigth);
-    sf::Vector2f getPosition();
-
+    void setColor(sf::Color color);
 };
 
 class Node_map
@@ -79,15 +78,17 @@ private:
     std::vector<Tile*> tiles;
 
     bool checkIntersect(Tile* rect);
-    Tile* tile;
 
 public:
     friend class Tile;
 
-    Node_map(sf::RenderWindow* window);
+    Node_map(sf::RenderWindow* window,  float gridX, float gridY);
     ~Node_map();
 
     void addTile();
+
+    void saveTree(const std::string filename);
+    void loadTree(const std::string filename);
 
     void update();
     void renderMap(sf::RenderTarget* target);
