@@ -21,6 +21,7 @@ Node_map::Node_map(sf::RenderWindow* window)
     gridSizeX = 21.f;
     gridSizeY = 11.f;
 
+    tile = new Tile(static_cast<float>(mousePosGrid.x), static_cast<float>(mousePosGrid.y), gridSizeX, gridSizeY);
 }
 
 void Node_map::update()
@@ -45,31 +46,28 @@ void Node_map::render(sf::RenderTarget* target)
     mouse_text.setString(ss.str());
     target->draw(mouse_text);
 
-    for(const auto itr : tiles)
-        target->draw(itr->shape);
-
+    renderMap(target);
 }
+
+
 
 bool Node_map::checkIntersect(Tile* rect) {
     for(auto itr : tiles)
-    {
-            if(itr->getOrigin() == rect->getOrigin())
+            if(itr->getPosition() == rect->getPosition())
                 return true;
-    }
     return false;
 }
 
 void Node_map::addTile()
 {
-    auto* tile = new Tile(static_cast<float>(mousePosGrid.x), static_cast<float>(mousePosGrid.y), gridSizeX, gridSizeY);
-    if (checkIntersect(tile))
-    {
+    Tile* _tile = new Tile(static_cast<float>(mousePosGrid.x) * gridSizeX, static_cast<float>(mousePosGrid.y) * gridSizeY, gridSizeX, gridSizeY);
+
+    if (checkIntersect(_tile))
         std::cout << "ERROR::TILE già presente" << std::endl;
-    }
     else
     {
-        tiles.push_back(tile);
-        std::cout << "AGGIUNTA TILE IN " << tile->getOrigin().x << "||" << tile->getOrigin().x << std::endl;
+        tiles.push_back(_tile);
+        std::cout << "AGGIUNTA TILE IN " << _tile->getPosition().x << "||" << _tile->getPosition().y << std::endl;
     }
     //std::cout << tiles.size() <<std::endl;
 }
@@ -80,21 +78,24 @@ Node_map::~Node_map()
         delete itr;
 }
 
-
+void Node_map::renderMap(sf::RenderTarget *target)
+{
+    for(auto itr : tiles)
+        target->draw(itr->shape);
+    target->draw(tile->shape);
+}
 //======================================================================================================================
 
 Tile::Tile(float x, float y, float width, float heigth)
 {
-    shape.setOrigin(sf::Vector2f(x,y));
+    shape.setSize(sf::Vector2f(width, heigth));
+    shape.setPosition(x,y);
     shape.setFillColor(sf::Color::Green);
     shape.setOutlineThickness(1.f);
-    shape.setSize(sf::Vector2f(width, heigth));
+    shape.setOutlineColor(sf::Color::Blue);
 }
 
-sf::Vector2f Tile::getOrigin()
+sf::Vector2f Tile::getPosition()
 {
-    return sf::Vector2f(shape.getOrigin());
+    return shape.getPosition();
 }
-
-
-

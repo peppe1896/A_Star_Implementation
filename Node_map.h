@@ -54,10 +54,11 @@ class Tile
 {
 public:
     sf::RectangleShape shape;
+    sf::Texture tex;
 
 public:
     Tile(float x, float y, float width, float heigth);
-    sf::Vector2f getOrigin();
+    sf::Vector2f getPosition();
 
 };
 
@@ -78,15 +79,20 @@ private:
     std::vector<Tile*> tiles;
 
     bool checkIntersect(Tile* rect);
+    Tile* tile;
 
 public:
+    friend class Tile;
+
     Node_map(sf::RenderWindow* window);
     ~Node_map();
 
     void addTile();
+
     void update();
+    void renderMap(sf::RenderTarget* target);
     void render(sf::RenderTarget* target);
-    friend class Tile;
+
 };
 
 

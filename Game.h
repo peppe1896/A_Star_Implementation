@@ -11,7 +11,7 @@ private:
     sf::RenderWindow* window;
     sf::VideoMode vMode;
     sf::Event event;
-
+    sf::RectangleShape __tile__;
     //Mappa
     Node_map* mappa;
 
@@ -21,9 +21,8 @@ private:
     //Background
     sf::RectangleShape background;
     sf::Texture background_texture;
-    bool show_bck;
 
-    //di quanto spostare la mappa verso dx e verso sud
+    //Di quanti pixel spostare la mappa verso dx e verso sud?
     float offsetx;
     float offsety;
 
@@ -34,7 +33,6 @@ public:
     void update();
     void render(sf::RenderTarget* target);
 
-    sf::VideoMode getVideoMode();
     void run();
 };
 
