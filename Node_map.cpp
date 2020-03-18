@@ -41,14 +41,12 @@ void Node_map::render(sf::RenderTarget* target)
     mouse_text.setPosition(this->mousePosView.x, this->mousePosView.y - 10);
     //mouse_text.setCharacterSize(16);
     std::stringstream ss;
-    ss << this->mousePosView.x << " " << this->mousePosView.y;
+    ss << this->mousePosGrid.x << " " << this->mousePosView.y;
     mouse_text.setString(ss.str());
     target->draw(mouse_text);
 
     renderMap(target);
 }
-
-
 
 bool Node_map::checkIntersect(Tile* rect) {
     for(auto itr : tiles)
@@ -61,20 +59,17 @@ void Node_map::addTile()
 {
     Tile* _tile = new Tile(static_cast<float>(mousePosGrid.x) * gridSizeX, static_cast<float>(mousePosGrid.y) * gridSizeY, gridSizeX, gridSizeY);
 
-    if (checkIntersect(_tile))
-        std::cout << "ERROR::TILE GIA' PRESENTE" << std::endl;
-    else
+    if (!checkIntersect(_tile))
     {
         tiles.push_back(_tile);
-        std::cout << "AGGIUNTA TILE IN /" << _tile->getPosition().x << "\\|//" << _tile->getPosition().y << "\\"<< std::endl;
+        //aggiungi un nodo al graph
+        //std::cout << ;
     }
-    //std::cout << tiles.size() <<std::endl;
 }
 
 Node_map::~Node_map()
 {
-    for(auto itr : tiles)
-        delete itr;
+
 }
 
 void Node_map::renderMap(sf::RenderTarget *target)
@@ -94,7 +89,7 @@ void Node_map::saveTree(const std::string filename)
         out_file << numtiles << std::endl;
 
         for(auto itr : tiles)
-            out_file << itr->shape.getPosition().x << " " << itr->shape.getPosition().y  << " " << std::endl;
+            out_file << itr->shape.getPosition().x << " " << itr->shape.getPosition().y  << std::endl;
     }
 }
 
@@ -110,8 +105,6 @@ void Node_map::loadTree(const std::string filename)
 
         in_file >> numtiles;
 
-        std::cout << "NUMERO DI TILES: " << numtiles;
-
         for (int i = 1; i < numtiles; ++i)
         {
             float tempx;
@@ -121,7 +114,37 @@ void Node_map::loadTree(const std::string filename)
         }
     }
 }
-//======================================================================================================================
+
+void Node_map::remTile()
+{
+//salto
+}
+
+std::vector<Tile *> Node_map::get_neighbor(Tile* tile) {
+    Tile* N = new Tile((tile->getPosition().x),(tile->getPosition().y) - tile->shape.getSize().y, gridSizeX, gridSizeY);
+    Tile* S = new Tile((tile->getPosition().x),(tile->getPosition().y) + tile->shape.getSize().y, gridSizeX, gridSizeY);
+    Tile* E = new Tile((tile->getPosition().x) + tile->shape.getSize().x,(tile->getPosition().y), gridSizeX, gridSizeY);
+    Tile* W = new Tile((tile->getPosition().x) - tile->shape.getSize().x,(tile->getPosition().y), gridSizeX, gridSizeY);
+
+    std::vector<Tile*> temp_vector;
+    for(auto itr : tiles)
+        if(itr->id == tile->id)
+            if(checkIntersect(N))
+                temp_vector.push_back(N);
+
+            if(checkIntersect(S))
+                temp_vector.push_back(S);
+
+            if(checkIntersect(E))
+                temp_vector.push_back(E);
+
+            if(checkIntersect(W))
+                temp_vector.push_back(W);
+
+    return temp_vector;
+}
+
+//====================================================================================================================//
 
 Tile::Tile(float x, float y, float width, float heigth)
 {
@@ -130,6 +153,8 @@ Tile::Tile(float x, float y, float width, float heigth)
     shape.setFillColor(sf::Color::Blue);
     shape.setOutlineThickness(0.f);
     shape.setOutlineColor(sf::Color::Blue);
+
+    id = std::to_string(static_cast<int>(x)) + std::to_string(static_cast<int>(y));
 }
 
 //Praticamente una shortcut di getPosition() di shape

@@ -26,7 +26,7 @@ void player::initPlayer(float vel, float gridX, float gridY)
 
     //Disegno rectangle shape
     player_sprite.setFillColor(sf::Color::Red);
-    player_sprite.setSize(sf::Vector2f(gridX + 10.f,gridY));
+    player_sprite.setSize(sf::Vector2f(gridX + 10.f,gridY-1.f));
     player_sprite.setOutlineThickness(0.f);
     player_sprite.setOutlineColor(sf::Color::Red);
 

@@ -13,7 +13,7 @@ Game::Game()
     gridSize_x = 11.f;
     gridSize_y = 11.f;/*SCALARE PER IMPOSTARE LA DIMENSIONE DELLA TILE E DEL PLAYER*/
 
-    hero = new player(window, .5f, gridSize_x, gridSize_y);
+    hero = new player(window, 2.f, gridSize_x, gridSize_y);
 
     //set Background (map)
     if(!background_texture.loadFromFile("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Background/canvas.png"))
@@ -21,7 +21,7 @@ Game::Game()
     background.setPosition(offsetx,offsety);
     background.setSize(sf::Vector2f(static_cast<float>(background_texture.getSize().x),static_cast<float>(background_texture.getSize().y)));// vMode.height));
     background.setTexture(&background_texture);
-    background.setScale(0.6757,0.3647); //Non adattabili! per una risoluzione di |1360x800|
+    background.setScale(0.6757,0.364967); //Non adattabili! per una risoluzione di |1360x800|
 
     //Graph
     mappa = new Node_map(window, gridSize_x, gridSize_y);

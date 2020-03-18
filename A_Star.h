@@ -17,6 +17,8 @@
 #include <algorithm>
 #include <cstdlib>
 
+class Tile;
+
 struct SimpleGraph
 {
     std::unordered_map<char, std::vector<char> > edges;
