@@ -41,8 +41,6 @@ private:
     std::vector<Tile*> tiles;
     std::unordered_map<Tile*, std::vector<Tile*>> tiles_graph;
 
-    TileGraph graph;
-
     bool checkIntersect(Tile* rect);
     std::vector<Tile*> get_neighbor(Tile* tile);
 
@@ -53,7 +51,7 @@ public:
     ~Node_map();
 
     void addTile();
-    void remTile();
+    void create_Unordered_map();
 
     void saveTree(const std::string filename);
     void loadTree(const std::string filename);

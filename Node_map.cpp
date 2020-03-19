@@ -5,6 +5,8 @@
 #include <sstream>
 #include <fstream>
 #include "Node_map.h"
+#include "Graph.h"
+
 
 Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY)
 {
@@ -18,7 +20,6 @@ Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY)
     mousePosGrid = sf::Mouse::getPosition();
     mouse_text.setCharacterSize(16);
 
-    //Necessari 2GridSize, uno per x, e uno per Y
     gridSizeX = gridX;//19.f
     gridSizeY = gridY;//10.f
 }
@@ -33,24 +34,24 @@ void Node_map::update()
                     static_cast<int>(this->mousePosView.x) / static_cast<int>(this->gridSizeX),
                     static_cast<int>(this->mousePosView.y) / static_cast<int>(this->gridSizeY)
             );
+
 }
 
 void Node_map::render(sf::RenderTarget* target)
 {
-    //REMOVE LATER!!!
     mouse_text.setPosition(this->mousePosView.x, this->mousePosView.y - 10);
-    //mouse_text.setCharacterSize(16);
     std::stringstream ss;
-    ss << this->mousePosGrid.x << " " << this->mousePosView.y;
+    ss << this->mousePosGrid.x << " " << this->mousePosGrid.y;
     mouse_text.setString(ss.str());
     target->draw(mouse_text);
 
+    //Render mappa
     renderMap(target);
 }
 
-bool Node_map::checkIntersect(Tile* rect) {
+bool Node_map::checkIntersect(Tile* _tile) {
     for(auto itr : tiles)
-            if(itr->getPosition() == rect->getPosition())
+            if(itr->getPosition() == _tile->getPosition())
                 return true;
     return false;
 }
@@ -62,14 +63,14 @@ void Node_map::addTile()
     if (!checkIntersect(_tile))
     {
         tiles.push_back(_tile);
-        //aggiungi un nodo al graph
-        //std::cout << ;
     }
+
 }
 
 Node_map::~Node_map()
 {
-
+    for(auto itr : tiles)
+        delete itr;
 }
 
 void Node_map::renderMap(sf::RenderTarget *target)
@@ -113,22 +114,34 @@ void Node_map::loadTree(const std::string filename)
             tiles.push_back(new Tile(tempx,tempy, gridSizeX,gridSizeY));
         }
     }
+
+    //Creo l'unordered map da dare al grafo
+    create_Unordered_map();
 }
 
-void Node_map::remTile()
+void Node_map::create_Unordered_map()
 {
-//salto
+    for(auto itr : tiles)
+    {
+        std::pair<Tile*,std::vector<Tile*>> pair(itr,get_neighbor(itr));
+        tiles_graph.emplace(pair);
+    }
+
+
 }
 
-std::vector<Tile *> Node_map::get_neighbor(Tile* tile) {
-    Tile* N = new Tile((tile->getPosition().x),(tile->getPosition().y) - tile->shape.getSize().y, gridSizeX, gridSizeY);
-    Tile* S = new Tile((tile->getPosition().x),(tile->getPosition().y) + tile->shape.getSize().y, gridSizeX, gridSizeY);
-    Tile* E = new Tile((tile->getPosition().x) + tile->shape.getSize().x,(tile->getPosition().y), gridSizeX, gridSizeY);
-    Tile* W = new Tile((tile->getPosition().x) - tile->shape.getSize().x,(tile->getPosition().y), gridSizeX, gridSizeY);
+std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
+{
+    Tile* N = new Tile((_tile->getPosition().x),(_tile->getPosition().y) - _tile->shape.getSize().y, gridSizeX, gridSizeY);
+    Tile* S = new Tile((_tile->getPosition().x),(_tile->getPosition().y) + _tile->shape.getSize().y, gridSizeX, gridSizeY);
+    Tile* E = new Tile((_tile->getPosition().x) + _tile->shape.getSize().x,(_tile->getPosition().y), gridSizeX, gridSizeY);
+    Tile* W = new Tile((_tile->getPosition().x) - _tile->shape.getSize().x,(_tile->getPosition().y), gridSizeX, gridSizeY);
 
     std::vector<Tile*> temp_vector;
+
     for(auto itr : tiles)
-        if(itr->id == tile->id)
+        if(*itr == _tile)
+            //checkIntersect controlla che ci sia in tiles
             if(checkIntersect(N))
                 temp_vector.push_back(N);
 
@@ -155,9 +168,13 @@ Tile::Tile(float x, float y, float width, float heigth)
     shape.setOutlineColor(sf::Color::Blue);
 
     id = std::to_string(static_cast<int>(x)) + std::to_string(static_cast<int>(y));
+
+    location.x = static_cast<int>(x);
+    location.y = static_cast<int>(y);
+
+    //std::cout << "x = " << location.x << " y = " << location.y << std::endl;
 }
 
-//Praticamente una shortcut di getPosition() di shape
 sf::Vector2f Tile::getPosition()
 {
     return shape.getPosition();
@@ -166,4 +183,18 @@ sf::Vector2f Tile::getPosition()
 void Tile::setColor(sf::Color color)
 {
     shape.setFillColor(color);
+}
+
+bool Tile::operator==(Tile *a)
+{
+    return id == a->id;
+}
+
+bool Tile::operator!=(Tile *a)
+{
+    return id != a->id;
+}
+
+GridLocation Tile::position_on_grill() {
+    return location;
 }

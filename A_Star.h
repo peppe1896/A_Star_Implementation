@@ -28,14 +28,14 @@ struct SimpleGraph
     }
 };
 
-SimpleGraph example_graph {{
+/*SimpleGraph example_graph {{
                                    {'A', {'B'}},
                                    {'B', {'A', 'C', 'D'}},
                                    {'C', {'A'}},
                                    {'D', {'E', 'A'}},
                                    {'E', {'B'}}
                            }};
-
+*/
 struct GridLocation
 {
     int x, y;
@@ -46,7 +46,8 @@ namespace std {
     template <> struct hash<GridLocation> {
         typedef GridLocation argument_type;
         typedef std::size_t result_type;
-        std::size_t operator()(const GridLocation& id) const noexcept {
+        std::size_t operator()(const GridLocation& id) const noexcept
+        {
             return std::hash<int>()(id.x ^ (id.y << 4));
         }
     };
@@ -62,12 +63,14 @@ struct SquareGrid
     SquareGrid(int width_, int height_)
             : width(width_), height(height_) {}
 
-    bool in_bounds(GridLocation id) const {
+    bool in_bounds(GridLocation id) const
+    {
         return 0 <= id.x && id.x < width
                && 0 <= id.y && id.y < height;
     }
 
-    bool passable(GridLocation id) const {
+    bool passable(GridLocation id) const
+    {
         return walls.find(id) == walls.end();
     }
 
@@ -129,7 +132,7 @@ void draw_grid(const Graph& graph, int field_width,
             std::cout << std::left << std::setw(field_width);
             if (graph.walls.find(id) != graph.walls.end())
             {
-            std::cout << std::string(field_width, '#');
+                std::cout << std::string(field_width, '#');
             }
             else if (point_to != nullptr && point_to->count(id))
             {

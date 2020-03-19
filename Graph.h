@@ -5,11 +5,19 @@
 #ifndef LABPROGRAMMAZIONE_GRAPH_H
 #define LABPROGRAMMAZIONE_GRAPH_H
 
+class Tile;
+
+struct GridLocation
+{
+    int x;
+    int y;
+};
+
 struct TileGraph
 {
-    std::unordered_map<std::string, std::vector<std::string> > edges;
+    std::unordered_map<Tile*, std::vector<Tile*> > edges;
 
-    std::vector<std::string> neighbors(std::string id) {
+    std::vector<Tile*> neighbors(Tile* id) {
         return edges[id];
     }
 };
@@ -21,9 +29,13 @@ public:
     sf::Vector2f getPosition();
     sf::RectangleShape shape;
     sf::Texture tex;
-
+    GridLocation location{};
     std::string id;
 
+    GridLocation position_on_grill();
     void setColor(sf::Color color);
+
+    bool operator==(Tile* a);
+    bool operator!=(Tile* a);
 };
 #endif //LABPROGRAMMAZIONE_GRAPH_H
