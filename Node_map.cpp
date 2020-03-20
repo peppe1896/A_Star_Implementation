@@ -90,7 +90,7 @@ void Node_map::saveTree(const std::string filename)
         out_file << numtiles << std::endl;
 
         for(auto itr : tiles)
-            out_file << itr->shape.getPosition().x << " " << itr->shape.getPosition().y  << std::endl;
+            out_file << itr->shape.getPosition().x/gridSizeX << " " << itr->shape.getPosition().y/gridSizeY  << std::endl;
     }
 }
 
@@ -111,12 +111,14 @@ void Node_map::loadTree(const std::string filename)
             float tempx;
             float tempy;
             in_file >> tempx >> tempy;
-            tiles.push_back(new Tile(tempx,tempy, gridSizeX,gridSizeY));
+            tiles.push_back(new Tile(tempx*gridSizeX,tempy*gridSizeY, gridSizeX,gridSizeY));
         }
     }
 
     //Creo l'unordered map da dare al grafo
     create_Unordered_map();
+
+    std::cout << "Size Graph (Bytes): " << tiles_graph.size();
 }
 
 void Node_map::create_Unordered_map()
@@ -136,7 +138,13 @@ std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
     Tile* S = new Tile((_tile->getPosition().x),(_tile->getPosition().y) + _tile->shape.getSize().y, gridSizeX, gridSizeY);
     Tile* E = new Tile((_tile->getPosition().x) + _tile->shape.getSize().x,(_tile->getPosition().y), gridSizeX, gridSizeY);
     Tile* W = new Tile((_tile->getPosition().x) - _tile->shape.getSize().x,(_tile->getPosition().y), gridSizeX, gridSizeY);
-
+/*
+    std::cout << "STAMPO LE POSIZIONI IN GRIGLIA DI NSEW : " << std::endl;
+    std::cout << N->location.x << " || " << N->location.y << std::endl;
+    std::cout << W->location.x << " || " << W->location.y << std::endl;
+    std::cout << E->location.x << " || " << E->location.y << std::endl;
+    std::cout << S->location.x << " || " << S->location.y << std::endl;
+*/
     std::vector<Tile*> temp_vector;
 
     for(auto itr : tiles)
@@ -167,12 +175,13 @@ Tile::Tile(float x, float y, float width, float heigth)
     shape.setOutlineThickness(0.f);
     shape.setOutlineColor(sf::Color::Blue);
 
-    id = std::to_string(static_cast<int>(x)) + std::to_string(static_cast<int>(y));
+    id = std::to_string(static_cast<int>(x/11.f)) + std::to_string(static_cast<int>(y/11.f));
 
-    location.x = static_cast<int>(x);
-    location.y = static_cast<int>(y);
+    location.x = static_cast<int>(x/11.f);
+    location.y = static_cast<int>(y/11.f);
 
-    //std::cout << "x = " << location.x << " y = " << location.y << std::endl;
+    std::cout << "x = " << location.x << " y = " << location.y << std::endl;
+    std::cout << "ID = " << id << std::endl;
 }
 
 sf::Vector2f Tile::getPosition()
@@ -193,8 +202,4 @@ bool Tile::operator==(Tile *a)
 bool Tile::operator!=(Tile *a)
 {
     return id != a->id;
-}
-
-GridLocation Tile::position_on_grill() {
-    return location;
 }

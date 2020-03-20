@@ -32,8 +32,8 @@ public:
     GridLocation location{};
     std::string id;
 
-    GridLocation position_on_grill();
-    void setColor(sf::Color color);
+    GridLocation position_on_grill;
+    void setColor(sf::Color colorchar);
 
     bool operator==(Tile* a);
     bool operator!=(Tile* a);

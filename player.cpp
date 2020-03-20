@@ -26,7 +26,7 @@ void player::initPlayer(float vel, float gridX, float gridY)
 
     //Disegno rectangle shape
     player_sprite.setFillColor(sf::Color::Red);
-    player_sprite.setSize(sf::Vector2f(gridX + 10.f,gridY-1.f));
+    player_sprite.setSize(sf::Vector2f(gridX,gridY));
     player_sprite.setOutlineThickness(0.f);
     player_sprite.setOutlineColor(sf::Color::Red);
 
@@ -47,7 +47,7 @@ void player::drawPlayer(sf::RenderTarget* target)
 
 void player::handleInput()
 {
-    if(sf::Mouse::isButtonPressed((sf::Mouse::Right))) {
+    if(sf::Mouse::isButtonPressed((sf::Mouse::Right)) && sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
         //se premi tasto dx del mouse puoi muovere il player con WASD
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
             position.y -= velocity;
@@ -58,7 +58,6 @@ void player::handleInput()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
             position.x += velocity;
     }
-    //Questa parte andrebbe rimossa per evitare
 
     check_bound(); //aggiorna il vettore position se tocca l'esterno
 
