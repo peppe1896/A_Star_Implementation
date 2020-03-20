@@ -26,13 +26,14 @@ class Tile
 {
 public:
     Tile(float x, float y, float width, float heigth);
+    Tile(GridLocation in, float gridSize);
+    Tile(int x, int y, float gridSize);
     sf::Vector2f getPosition();
     sf::RectangleShape shape;
     sf::Texture tex;
     GridLocation location{};
     std::string id;
 
-    GridLocation position_on_grill;
     void setColor(sf::Color colorchar);
 
     bool operator==(Tile* a);

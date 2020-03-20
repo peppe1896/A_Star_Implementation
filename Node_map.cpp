@@ -60,6 +60,11 @@ void Node_map::addTile()
 {
     Tile* _tile = new Tile(static_cast<float>(mousePosGrid.x) * gridSizeX, static_cast<float>(mousePosGrid.y) * gridSizeY, gridSizeX, gridSizeY);
 
+    Tile* N = new Tile(_tile->location, gridSizeX);
+    Tile* S = new Tile((_tile->getPosition().x),(_tile->getPosition().y) + _tile->shape.getSize().y, gridSizeX, gridSizeY);
+    Tile* E = new Tile((_tile->getPosition().x) + _tile->shape.getSize().x,(_tile->getPosition().y), gridSizeX, gridSizeY);
+    Tile* W = new Tile((_tile->getPosition().x) - _tile->shape.getSize().x,(_tile->getPosition().y), gridSizeX, gridSizeY);
+
     if (!checkIntersect(_tile))
     {
         tiles.push_back(_tile);
@@ -128,8 +133,6 @@ void Node_map::create_Unordered_map()
         std::pair<Tile*,std::vector<Tile*>> pair(itr,get_neighbor(itr));
         tiles_graph.emplace(pair);
     }
-
-
 }
 
 std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
@@ -138,7 +141,9 @@ std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
     Tile* S = new Tile((_tile->getPosition().x),(_tile->getPosition().y) + _tile->shape.getSize().y, gridSizeX, gridSizeY);
     Tile* E = new Tile((_tile->getPosition().x) + _tile->shape.getSize().x,(_tile->getPosition().y), gridSizeX, gridSizeY);
     Tile* W = new Tile((_tile->getPosition().x) - _tile->shape.getSize().x,(_tile->getPosition().y), gridSizeX, gridSizeY);
-/*
+
+    /*
+ *
     std::cout << "STAMPO LE POSIZIONI IN GRIGLIA DI NSEW : " << std::endl;
     std::cout << N->location.x << " || " << N->location.y << std::endl;
     std::cout << W->location.x << " || " << W->location.y << std::endl;
@@ -180,8 +185,8 @@ Tile::Tile(float x, float y, float width, float heigth)
     location.x = static_cast<int>(x/11.f);
     location.y = static_cast<int>(y/11.f);
 
-    std::cout << "x = " << location.x << " y = " << location.y << std::endl;
-    std::cout << "ID = " << id << std::endl;
+    //std::cout << "x = " << location.x << " y = " << location.y << std::endl;
+    //std::cout << "ID = " << id << std::endl;
 }
 
 sf::Vector2f Tile::getPosition()
@@ -202,4 +207,36 @@ bool Tile::operator==(Tile *a)
 bool Tile::operator!=(Tile *a)
 {
     return id != a->id;
+}
+
+Tile::Tile(GridLocation in, float gridSize)
+{
+    shape.setSize(sf::Vector2f(gridSize, gridSize));
+    shape.setPosition(in.x * static_cast<int>(gridSize),in.y * static_cast<int>(gridSize));
+    shape.setFillColor(sf::Color::Blue);
+    shape.setOutlineThickness(0.f);
+    shape.setOutlineColor(sf::Color::Blue);
+
+    id = std::to_string(in.x) + std::to_string(in.y);
+
+    location.x = in.x;
+    location.y = in.y;
+
+    std::cout << "x = " << location.x << " y = " << location.y << std::endl;
+    std::cout << "ID = " << id << std::endl;
+}
+
+Tile::Tile(int x, int y, float gridSize)
+{
+    shape.setSize(sf::Vector2f(gridSize, gridSize));
+    shape.setPosition(x * static_cast<int>(gridSize),y * static_cast<int>(gridSize));
+    shape.setFillColor(sf::Color::Blue);
+    shape.setOutlineThickness(0.f);
+    shape.setOutlineColor(sf::Color::Blue);
+
+    id = std::to_string(x) + std::to_string(y);
+
+    location.x = x;
+    location.y = y;
+
 }
