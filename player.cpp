@@ -5,12 +5,12 @@
 #include <iostream>
 #include "player.h"
 
-player::player(sf::RenderWindow* target, float vel)
+player::player(sf::RenderWindow* target, float vel, float gridX, float gridY)
 {
     windw = target;
     window_size.x = static_cast<float>(windw->getSize().x);
     window_size.y = static_cast<float>(windw->getSize().y);
-    initPlayer(vel);
+    initPlayer(vel, gridX, gridY);
 }
 
 player::~player()
@@ -18,23 +18,21 @@ player::~player()
 
 }
 
-void player::initPlayer(float vel)
+void player::initPlayer(float vel, float gridX, float gridY)
 {
     //Imposto vettore posizione
     position.x = window_size.x / 2 + player_sprite.getSize().x / 2;
     position.y = window_size.y / 2 + player_sprite.getSize().y / 2;
 
     //Disegno rectangle shape
-    player_sprite.setFillColor(sf::Color::Transparent);
-    //player_sprite.setSize(sf::Vector2f(50.f,50.f));
-    player_sprite.setSize(sf::Vector2f(25.f,25.f));
-    player_sprite.setOutlineThickness(4.f);
-    player_sprite.setOutlineColor(sf::Color::Green);
+    player_sprite.setFillColor(sf::Color::Red);
+    player_sprite.setSize(sf::Vector2f(gridX,gridY));
+    player_sprite.setOutlineThickness(0.f);
+    player_sprite.setOutlineColor(sf::Color::Red);
 
     player_sprite.setPosition(position);
 
     setVelocity(vel);
-
 }
 
 void player::move(sf::Vector2f pos)
@@ -49,7 +47,7 @@ void player::drawPlayer(sf::RenderTarget* target)
 
 void player::handleInput()
 {
-    if(sf::Mouse::isButtonPressed((sf::Mouse::Right))) {
+    if(sf::Mouse::isButtonPressed((sf::Mouse::Right)) && sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
         //se premi tasto dx del mouse puoi muovere il player con WASD
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
             position.y -= velocity;
@@ -60,7 +58,6 @@ void player::handleInput()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
             position.x += velocity;
     }
-    //Questa parte andrebbe rimossa per evitare
 
     check_bound(); //aggiorna il vettore position se tocca l'esterno
 

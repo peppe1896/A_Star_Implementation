@@ -22,45 +22,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Audio.hpp>
-
-
-struct SimpleGraph
-{
-    std::unordered_map<char, std::vector<char> > edges;
-
-    std::vector<char> neighbors(char id) {
-        return edges[id];
-    }
-};
-struct GridLocation
-{
-    int x, y;
-};
-
-namespace std {
-/* implement hash function so we can put GridLocation into an unordered_set */
-    template <> struct hash<GridLocation> {
-        typedef GridLocation argument_type;
-        typedef std::size_t result_type;
-        std::size_t operator()(const GridLocation& id) const noexcept {
-            return std::hash<int>()(id.x ^ (id.y << 4));
-        }
-    };
-}
-
-class Node_map;
-
-class Tile
-{
-public:
-    sf::RectangleShape shape;
-    sf::Texture tex;
-
-public:
-    Tile(float x, float y, float width, float heigth);
-    sf::Vector2f getPosition();
-
-};
+#include "Graph.h"
 
 class Node_map
 {
@@ -77,17 +39,22 @@ private:
     float gridSizeX;
     float gridSizeY;
     std::vector<Tile*> tiles;
+    std::unordered_map<Tile*, std::vector<Tile*>> tiles_graph;
 
     bool checkIntersect(Tile* rect);
-    Tile* tile;
+    std::vector<Tile*> get_neighbor(Tile* tile);
 
 public:
     friend class Tile;
 
-    Node_map(sf::RenderWindow* window);
+    Node_map(sf::RenderWindow* window,  float gridX, float gridY);
     ~Node_map();
 
     void addTile();
+    void create_Unordered_map();
+
+    void saveTree(const std::string filename);
+    void loadTree(const std::string filename);
 
     void update();
     void renderMap(sf::RenderTarget* target);

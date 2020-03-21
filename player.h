@@ -14,7 +14,7 @@ private:
 
     sf::Vector2f position;
 
-    void initPlayer(float vel);
+    void initPlayer(float vel, float gridX, float gridY);
 
     sf::RectangleShape player_sprite;
 
@@ -26,7 +26,7 @@ private:
 
 public:
 
-    player(sf::RenderWindow* target, float vel);
+    player(sf::RenderWindow* target, float vel, float gridX, float gridY);
 
     ~player();
 

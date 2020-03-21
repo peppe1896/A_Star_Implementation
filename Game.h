@@ -25,6 +25,8 @@ private:
     //Di quanti pixel spostare la mappa verso dx e verso sud?
     float offsetx;
     float offsety;
+    float gridSize_x;
+    float gridSize_y;
 
 public:
     Game();
