@@ -60,11 +60,6 @@ void Node_map::addTile()
 {
     Tile* _tile = new Tile(static_cast<float>(mousePosGrid.x) * gridSizeX, static_cast<float>(mousePosGrid.y) * gridSizeY, gridSizeX, gridSizeY);
 
-    Tile* N = new Tile(_tile->location, gridSizeX);
-    Tile* S = new Tile((_tile->getPosition().x),(_tile->getPosition().y) + _tile->shape.getSize().y, gridSizeX, gridSizeY);
-    Tile* E = new Tile((_tile->getPosition().x) + _tile->shape.getSize().x,(_tile->getPosition().y), gridSizeX, gridSizeY);
-    Tile* W = new Tile((_tile->getPosition().x) - _tile->shape.getSize().x,(_tile->getPosition().y), gridSizeX, gridSizeY);
-
     if (!checkIntersect(_tile))
     {
         tiles.push_back(_tile);
@@ -137,24 +132,15 @@ void Node_map::create_Unordered_map()
 
 std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
 {
-    Tile* N = new Tile((_tile->getPosition().x),(_tile->getPosition().y) - _tile->shape.getSize().y, gridSizeX, gridSizeY);
-    Tile* S = new Tile((_tile->getPosition().x),(_tile->getPosition().y) + _tile->shape.getSize().y, gridSizeX, gridSizeY);
-    Tile* E = new Tile((_tile->getPosition().x) + _tile->shape.getSize().x,(_tile->getPosition().y), gridSizeX, gridSizeY);
-    Tile* W = new Tile((_tile->getPosition().x) - _tile->shape.getSize().x,(_tile->getPosition().y), gridSizeX, gridSizeY);
+    Tile* N = new Tile(_tile->location.x, _tile->location.y - 1, gridSizeX);
+    Tile* S = new Tile(_tile->location.x, _tile->location.y + 1, gridSizeX);
+    Tile* E = new Tile(_tile->location.x + 1, _tile->location.y, gridSizeX);
+    Tile* W = new Tile(_tile->location.x - 1, _tile->location.y, gridSizeX);
 
-    /*
- *
-    std::cout << "STAMPO LE POSIZIONI IN GRIGLIA DI NSEW : " << std::endl;
-    std::cout << N->location.x << " || " << N->location.y << std::endl;
-    std::cout << W->location.x << " || " << W->location.y << std::endl;
-    std::cout << E->location.x << " || " << E->location.y << std::endl;
-    std::cout << S->location.x << " || " << S->location.y << std::endl;
-*/
     std::vector<Tile*> temp_vector;
 
     for(auto itr : tiles)
         if(*itr == _tile)
-            //checkIntersect controlla che ci sia in tiles
             if(checkIntersect(N))
                 temp_vector.push_back(N);
 
@@ -222,8 +208,8 @@ Tile::Tile(GridLocation in, float gridSize)
     location.x = in.x;
     location.y = in.y;
 
-    std::cout << "x = " << location.x << " y = " << location.y << std::endl;
-    std::cout << "ID = " << id << std::endl;
+    //std::cout << "x = " << location.x << " y = " << location.y << std::endl;
+    //std::cout << "ID = " << id << std::endl;
 }
 
 Tile::Tile(int x, int y, float gridSize)
@@ -239,4 +225,6 @@ Tile::Tile(int x, int y, float gridSize)
     location.x = x;
     location.y = y;
 
+    //std::cout << "x = " << location.x << " y = " << location.y << std::endl;
+    //std::cout << "ID = " << id << std::endl;
 }
