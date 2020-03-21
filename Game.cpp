@@ -25,7 +25,6 @@ Game::Game()
 
     //Graph
     mappa = new Node_map(window, gridSize_x, gridSize_y);
-    mappa->loadTree("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Mappa.txt");
 }
 
 Game::~Game() {}

@@ -6,22 +6,6 @@
 #define LABPROGRAMMAZIONE_NODE_MAP_H
 
 //#include "A_Star.h"
-#include <iostream>
-#include <iomanip>
-#include <unordered_map>
-#include <unordered_set>
-#include <array>
-#include <vector>
-#include <utility>
-#include <queue>
-#include <tuple>
-#include <algorithm>
-#include <cstdlib>
-
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Audio.hpp>
 #include "Graph.h"
 
 class Node_map

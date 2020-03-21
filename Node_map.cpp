@@ -5,8 +5,6 @@
 #include <sstream>
 #include <fstream>
 #include "Node_map.h"
-#include "Graph.h"
-
 
 Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY)
 {
@@ -22,6 +20,9 @@ Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY)
 
     gridSizeX = gridX;//19.f
     gridSizeY = gridY;//10.f
+
+    loadTree("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Mappa.txt");
+
 }
 
 void Node_map::update()
@@ -43,6 +44,7 @@ void Node_map::render(sf::RenderTarget* target)
     std::stringstream ss;
     ss << this->mousePosGrid.x << " " << this->mousePosGrid.y;
     mouse_text.setString(ss.str());
+    mouse_text.setFillColor(sf::Color::Red);
     target->draw(mouse_text);
 
     //Render mappa
@@ -90,7 +92,8 @@ void Node_map::saveTree(const std::string filename)
         out_file << numtiles << std::endl;
 
         for(auto itr : tiles)
-            out_file << itr->shape.getPosition().x/gridSizeX << " " << itr->shape.getPosition().y/gridSizeY  << std::endl;
+            out_file << itr->location.x << " " << itr->location.y  << " " << itr->weight << std::endl;
+            //out_file << itr->shape.getPosition().x/gridSizeX << " " << itr->shape.getPosition().y/gridSizeY  << " " << itr->weight << std::endl;
     }
 }
 
@@ -110,8 +113,9 @@ void Node_map::loadTree(const std::string filename)
         {
             float tempx;
             float tempy;
-            in_file >> tempx >> tempy;
-            tiles.push_back(new Tile(tempx*gridSizeX,tempy*gridSizeY, gridSizeX,gridSizeY));
+            int weig = 0;
+            in_file >> tempx >> tempy >> weig;
+            tiles.push_back(new Tile(tempx*gridSizeX,tempy*gridSizeY, gridSizeX,gridSizeY, weig));
         }
     }
 
@@ -141,90 +145,19 @@ std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
 
     for(auto itr : tiles)
         if(*itr == _tile)
-            if(checkIntersect(N))
+        {
+            if (checkIntersect(N))
                 temp_vector.push_back(N);
 
-            if(checkIntersect(S))
+            if (checkIntersect(S))
                 temp_vector.push_back(S);
 
-            if(checkIntersect(E))
+            if (checkIntersect(E))
                 temp_vector.push_back(E);
 
-            if(checkIntersect(W))
+            if (checkIntersect(W))
                 temp_vector.push_back(W);
+        }
 
     return temp_vector;
-}
-
-//====================================================================================================================//
-
-Tile::Tile(float x, float y, float width, float heigth)
-{
-    shape.setSize(sf::Vector2f(width, heigth));
-    shape.setPosition(x,y);
-    shape.setFillColor(sf::Color::Blue);
-    shape.setOutlineThickness(0.f);
-    shape.setOutlineColor(sf::Color::Blue);
-
-    id = std::to_string(static_cast<int>(x/11.f)) + std::to_string(static_cast<int>(y/11.f));
-
-    location.x = static_cast<int>(x/11.f);
-    location.y = static_cast<int>(y/11.f);
-
-    //std::cout << "x = " << location.x << " y = " << location.y << std::endl;
-    //std::cout << "ID = " << id << std::endl;
-}
-
-sf::Vector2f Tile::getPosition()
-{
-    return shape.getPosition();
-}
-
-void Tile::setColor(sf::Color color)
-{
-    shape.setFillColor(color);
-}
-
-bool Tile::operator==(Tile *a)
-{
-    return id == a->id;
-}
-
-bool Tile::operator!=(Tile *a)
-{
-    return id != a->id;
-}
-
-Tile::Tile(GridLocation in, float gridSize)
-{
-    shape.setSize(sf::Vector2f(gridSize, gridSize));
-    shape.setPosition(in.x * static_cast<int>(gridSize),in.y * static_cast<int>(gridSize));
-    shape.setFillColor(sf::Color::Blue);
-    shape.setOutlineThickness(0.f);
-    shape.setOutlineColor(sf::Color::Blue);
-
-    id = std::to_string(in.x) + std::to_string(in.y);
-
-    location.x = in.x;
-    location.y = in.y;
-
-    //std::cout << "x = " << location.x << " y = " << location.y << std::endl;
-    //std::cout << "ID = " << id << std::endl;
-}
-
-Tile::Tile(int x, int y, float gridSize)
-{
-    shape.setSize(sf::Vector2f(gridSize, gridSize));
-    shape.setPosition(x * static_cast<int>(gridSize),y * static_cast<int>(gridSize));
-    shape.setFillColor(sf::Color::Blue);
-    shape.setOutlineThickness(0.f);
-    shape.setOutlineColor(sf::Color::Blue);
-
-    id = std::to_string(x) + std::to_string(y);
-
-    location.x = x;
-    location.y = y;
-
-    //std::cout << "x = " << location.x << " y = " << location.y << std::endl;
-    //std::cout << "ID = " << id << std::endl;
 }
