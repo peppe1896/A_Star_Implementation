@@ -29,20 +29,7 @@ struct GridLocation
 {
     int x;
     int y;
-
-    bool operator == (GridLocation a) {
-        return a.x == x && a.y == y;
-    }
-
-    bool operator != (GridLocation a) {
-        return a.x != x || a.y != y;
-    }
-
-    bool operator < (GridLocation a) {
-        return std::tie(a.x, a.y) < std::tie(x, y);
-    }
 };
-
 
 namespace std {
 /* implement hash function so we can put GridLocation into an unordered_set */
@@ -96,32 +83,33 @@ std::vector<Location> reconstruct_path(
     return path;
 }
 
-
-template<typename Location, typename Graph>
+//STAVO PROVANDO A TOGLIERE IL TIPO LOCATION, IN MODO DA NON DOVER USARE I
+/*
+template<typename Graph>
 void a_star_search
         (Graph graph,
-         Location start,
-         Location goal)
-         //std::unordered_map<Location, Location>& came_from,
-         //std::unordered_map<Location, double>& cost_so_far)
+         GridLocation start,
+         GridLocation goal,
+         std::unordered_map<GridLocation, GridLocation>& came_from,
+         std::unordered_map<GridLocation, double>& cost_so_far)
 {
-    PriorityQueue<Location, double> frontier;
+    PriorityQueue<GridLocation, double> frontier;
     frontier.put(start, 0);
 
-    std::unordered_map<Location, Location> came_from;
-    std::unordered_map<Location, double> cost_so_far;
+    //std::unordered_map<Location, Location> came_from;
+    //std::unordered_map<Location, double> cost_so_far;
 
     came_from[start] = start;
     cost_so_far[start] = 0;
 
     while (!frontier.empty()) {
-        Location current = frontier.get();
+        GridLocation current = frontier.get();
 
-        if (current == goal) {
+        if (current.x == goal.x && current.y == goal.y) {
             break;
         }
 
-        for (Location next : graph.neighbors(current)) {
+        for (GridLocation next : graph.neighbors(current)) {
             double new_cost = cost_so_far[current] + graph.cost(current, next);
             if (cost_so_far.find(next) == cost_so_far.end()
                 || new_cost < cost_so_far[next]) {
@@ -133,7 +121,7 @@ void a_star_search
         }
     }
 }
-
+*/
 class Tile
 {
 public:

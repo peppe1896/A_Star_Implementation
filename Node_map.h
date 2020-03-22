@@ -41,6 +41,15 @@ struct SquareGrid {
     }
 };
 
+struct GridWithWeights: SquareGrid {
+    //std::unordered_set<GridLocation> forests;
+    GridWithWeights(int w, int h): SquareGrid(w, h) {}
+    double cost(GridLocation from_node, GridLocation to_node) const {
+        return 1;//forests.find(to_node) != forests.end()? 5 : 1;
+    }
+};
+
+
 class Node_map
 {
 private:
@@ -63,7 +72,7 @@ private:
     std::unordered_map<GridLocation, GridLocation> came_from;
     std::unordered_map<GridLocation, double> cost_so_far;
 
-    SquareGrid grid = SquareGrid(117, 63);
+    GridWithWeights grid = GridWithWeights(117, 63);
 
 public:
     friend class Tile;
@@ -77,7 +86,13 @@ public:
     void saveTree(const std::string filename);
     void loadTree(const std::string filename);
 
-    void aStar(GridLocation start, GridLocation goal);
+    template<typename Location, typename Graph>
+    void aStar(Graph graph,
+               Location start,
+               Location goal,
+               std::unordered_map<Location, Location>& came_from,
+               std::unordered_map<Location, double>& cost_so_far);
+
     void update();
     void renderMap(sf::RenderTarget* target);
     void render(sf::RenderTarget* target);
