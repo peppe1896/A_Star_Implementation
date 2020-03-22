@@ -89,9 +89,7 @@ public:
     template<typename Location, typename Graph>
     void aStar(Graph graph,
                Location start,
-               Location goal,
-               std::unordered_map<Location, Location>& came_from,
-               std::unordered_map<Location, double>& cost_so_far);
+               Location goal);
 
     void update();
     void renderMap(sf::RenderTarget* target);

@@ -174,16 +174,14 @@ std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
 template<typename Location, typename Graph>
 void Node_map::aStar(Graph graph,
                      Location start,
-                     Location goal,
-                     std::unordered_map<Location, Location>& came_from,
-                     std::unordered_map<Location, double>& cost_so_far)
+                     Location goal)
 {
 
         PriorityQueue<Location, double> frontier;
         frontier.put(start, 0);
 
-        came_from[start] = start;
-        cost_so_far[start] = 0;
+        this->came_from[start] = start;
+        this->cost_so_far[start] = 0;
 
         while (!frontier.empty()) {
             Location current = frontier.get();
