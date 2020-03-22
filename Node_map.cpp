@@ -18,10 +18,16 @@ Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY)
     mousePosGrid = sf::Mouse::getPosition();
     mouse_text.setCharacterSize(16);
 
-    gridSizeX = gridX;//19.f
-    gridSizeY = gridY;//10.f
+    gridSizeX = gridX;
+    gridSizeY = gridY;
 
     loadTree("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Mappa.txt");
+
+    //creo il grafo da passare a a_star_search
+    //grid.width = 117;
+    //grid.height = 63;
+
+    //grid = new SquareGrid{117,63};
 
 }
 
@@ -51,11 +57,13 @@ void Node_map::render(sf::RenderTarget* target)
     renderMap(target);
 }
 
-bool Node_map::checkIntersect(Tile* _tile) {
+bool Node_map::checkIntersect(Tile* _tile)
+{
     for(auto itr : tiles)
             if(itr->getPosition() == _tile->getPosition())
                 return true;
     return false;
+
 }
 
 void Node_map::addTile()
@@ -63,16 +71,15 @@ void Node_map::addTile()
     Tile* _tile = new Tile(static_cast<float>(mousePosGrid.x) * gridSizeX, static_cast<float>(mousePosGrid.y) * gridSizeY, gridSizeX, gridSizeY);
 
     if (!checkIntersect(_tile))
-    {
         tiles.push_back(_tile);
-    }
-
 }
 
 Node_map::~Node_map()
 {
     for(auto itr : tiles)
         delete itr;
+
+    //delete grid;
 }
 
 void Node_map::renderMap(sf::RenderTarget *target)
@@ -132,6 +139,8 @@ void Node_map::create_Unordered_map()
         std::pair<Tile*,std::vector<Tile*>> pair(itr,get_neighbor(itr));
         tiles_graph.emplace(pair);
     }
+
+    std::cout << "UNORDERED MAP CREATED" << std::endl;
 }
 
 std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
@@ -161,3 +170,12 @@ std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
 
     return temp_vector;
 }
+
+void Node_map::aStar(GridLocation start, GridLocation goal)
+{
+
+    //GridLocation start{1, 4};
+    //GridLocation goal{8, 5};
+    a_star_search(grid, start, goal);//, came_from, cost_so_far);
+}
+

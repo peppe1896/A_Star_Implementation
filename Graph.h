@@ -29,16 +29,31 @@ struct GridLocation
 {
     int x;
     int y;
-};
 
-struct TileGraph
-{
-    std::unordered_map<Tile*, std::vector<Tile*> > edges;
+    bool operator == (GridLocation a) {
+        return a.x == x && a.y == y;
+    }
 
-    std::vector<Tile*> neighbors(Tile* id) {
-        return edges[id];
+    bool operator != (GridLocation a) {
+        return a.x != x || a.y != y;
+    }
+
+    bool operator < (GridLocation a) {
+        return std::tie(a.x, a.y) < std::tie(x, y);
     }
 };
+
+
+namespace std {
+/* implement hash function so we can put GridLocation into an unordered_set */
+    template <> struct hash<GridLocation> {
+        typedef GridLocation argument_type;
+        typedef std::size_t result_type;
+        std::size_t operator()(const GridLocation& id) const noexcept {
+            return std::hash<int>()(id.x ^ (id.y << 4));
+        }
+    };
+}
 
 template<typename T, typename priority_t>
 struct PriorityQueue {
@@ -61,16 +76,40 @@ struct PriorityQueue {
     }
 };
 
+inline double heuristic(GridLocation a, GridLocation b) {
+    return std::abs(a.x - b.x) + std::abs(a.y - b.y);
+}
+
+template<typename Location>
+std::vector<Location> reconstruct_path(
+        Location start, Location goal,
+        std::unordered_map<Location, Location> came_from
+) {
+    std::vector<Location> path;
+    Location current = goal;
+    while (current != start) {
+        path.push_back(current);
+        current = came_from[current];
+    }
+    path.push_back(start); // optional
+    std::reverse(path.begin(), path.end());
+    return path;
+}
+
+
 template<typename Location, typename Graph>
-void dijkstra_search
+void a_star_search
         (Graph graph,
          Location start,
-         Location goal,
-         std::unordered_map<Location, Location>& came_from,
-         std::unordered_map<Location, double>& cost_so_far)
+         Location goal)
+         //std::unordered_map<Location, Location>& came_from,
+         //std::unordered_map<Location, double>& cost_so_far)
 {
     PriorityQueue<Location, double> frontier;
     frontier.put(start, 0);
+
+    std::unordered_map<Location, Location> came_from;
+    std::unordered_map<Location, double> cost_so_far;
 
     came_from[start] = start;
     cost_so_far[start] = 0;
@@ -87,8 +126,9 @@ void dijkstra_search
             if (cost_so_far.find(next) == cost_so_far.end()
                 || new_cost < cost_so_far[next]) {
                 cost_so_far[next] = new_cost;
+                double priority = new_cost + heuristic(next, goal);
+                frontier.put(next, priority);
                 came_from[next] = current;
-                frontier.put(next, new_cost);
             }
         }
     }
@@ -112,4 +152,5 @@ public:
     bool operator==(Tile* a);
     bool operator!=(Tile* a);
 };
+
 #endif //LABPROGRAMMAZIONE_GRAPH_H

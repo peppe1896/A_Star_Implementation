@@ -32,7 +32,7 @@ void player::initPlayer(float vel, float gridX, float gridY)
 
     player_sprite.setPosition(position);
 
-    setVelocity(vel);
+    setVelocity(vel*gridX);
 }
 
 void player::move(sf::Vector2f pos)
@@ -47,8 +47,7 @@ void player::drawPlayer(sf::RenderTarget* target)
 
 void player::handleInput()
 {
-    if(sf::Mouse::isButtonPressed((sf::Mouse::Right)) && sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-        //se premi tasto dx del mouse puoi muovere il player con WASD
+    if(!sf::Mouse::isButtonPressed((sf::Mouse::Right))) {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
             position.y -= velocity;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
