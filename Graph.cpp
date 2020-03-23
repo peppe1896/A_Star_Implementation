@@ -17,11 +17,9 @@ Tile::Tile(float x, float y, float width, float heigth, int peso)
     location.y = static_cast<int>(y/11.f);
 
     weight = peso;
-    //std::cout << "x = " << location.x << " y = " << location.y << std::endl;
-    //std::cout << "ID = " << id << std::endl;
 }
 
-Tile::Tile(GridLocation in, float gridSize, int peso)
+Tile::Tile(sf::Vector2i in, float gridSize, int peso)
 {
     shape.setSize(sf::Vector2f(gridSize, gridSize));
     shape.setPosition(in.x * static_cast<int>(gridSize),in.y * static_cast<int>(gridSize));
@@ -35,8 +33,6 @@ Tile::Tile(GridLocation in, float gridSize, int peso)
     location.y = in.y;
 
     weight = peso;
-    //std::cout << "x = " << location.x << " y = " << location.y << std::endl;
-    //std::cout << "ID = " << id << std::endl;
 }
 
 Tile::Tile(int x, int y, float gridSize, int peso)
@@ -53,8 +49,6 @@ Tile::Tile(int x, int y, float gridSize, int peso)
     location.y = y;
 
     weight = peso;
-    //std::cout << "x = " << location.x << " y = " << location.y << std::endl;
-    //std::cout << "ID = " << id << std::endl;
 }
 
 sf::Vector2f Tile::getPosition()

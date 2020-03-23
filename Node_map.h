@@ -9,39 +9,34 @@
 #include "Graph.h"
 
 static std::unordered_map<Tile*, std::vector<Tile*>> tiles_graph;
-//static bool checkTile(Tile*);
-static std::unordered_set<GridLocation> grid_in_map;
+static std::unordered_set<sf::Vector2i> grid_in_map;
+static std::unordered_set<sf::Vector2i> grid_out_map;
+static std::unordered_set<sf::Vector2i> all_grid;
 
 struct SquareGrid {
-    static std::array<GridLocation, 4> DIRS;
-
     int width, height;
-    std::unordered_set<GridLocation> walls;
 
     SquareGrid(int width_, int height_)
             : width(width_), height(height_) {}
 
-    bool in_bounds(GridLocation id) const {
-        return true;
-    }
-
-    bool passable(GridLocation id) const {
-        return true;
-    }
-    std::vector<GridLocation> neighbors(GridLocation id) const {
-        std::vector<GridLocation> results;
+    std::vector<sf::Vector2i> neighbors(sf::Vector2i id) const {
+        std::vector<sf::Vector2i> results;
 
         Tile* _tile = new Tile(id);
         std::vector<Tile*> neig_tile = tiles_graph.at(_tile);
 
-        for(auto itr : neig_tile)
-            results.push_back(itr->location);
+        std::cout << "SQUAREGRID::CREATING VECTOR NEIGHBORS" << std::endl;
 
+        for(auto itr : neig_tile) {
+            results.push_back(itr->location);
+            std::cout << itr->location.x << "--" << itr->location.y << std::endl;
+        }
+        //TODO COntrolla che funziona il ciclo
         return results;
     }
 };
-  /*  std::vector<GridLocation> neighbors(GridLocation id) const {
-        std::vector<GridLocation> results;
+  /*  std::vector<sf::Vector2i> neighbors(sf::Vector2i id) const {
+        std::vector<sf::Vector2i> results;
         //create a new tile to pass to the unordered_map
         Tile* _tile = new Tile(id);
         std::vector<Tile*> neig_tile = tiles_graph.at(_tile);
@@ -56,34 +51,19 @@ struct SquareGrid {
 */
 
 struct GridWithWeights: SquareGrid {
-  //  std::unordered_set<GridLocation> forests;
-    GridWithWeights(int w, int h): SquareGrid(w, h) {
-      /*    int i = 0;
-          int j = 0;
 
-          for(i; i < 117; i++)
-          {
-              for (j; j < 63; j++)
-              {
-                  for(const auto itr : grid_in_map)
-                      if((itr.x != i) || itr.y != j)
-                          forests.insert(GridLocation{i,j});
-              }
-          }
-      }
-  */
-//    double cost(GridLocation from_node, GridLocation to_node) const {
-//        return forests.find(to_node) != forests.end()? 8000 : 1;
-//    }
-  }
+    GridWithWeights(int w, int h): SquareGrid(w, h){}
+
+    double cost(sf::Vector2i from_node, sf::Vector2i to_node) const {
+        if(grid_out_map.find(to_node) == grid_out_map.end())
+            return 1;
+        return 10000;
+    }
 };
-
 
 class Node_map
 {
 private:
-    sf::Vector2i mousePosScreen;
-    sf::Vector2i mousePosWindow;
     sf::Vector2f mousePosView;
     sf::Vector2i mousePosGrid;
     sf::Font mouse_font;
@@ -98,12 +78,10 @@ private:
     bool checkIntersect(Tile* rect);
     std::vector<Tile*> get_neighbor(Tile* tile);
 
-    //std::unordered_map<GridLocation, GridLocation> came_from;
-    //std::unordered_map<GridLocation, double> cost_so_far;
-    std::unordered_map<Tile*, Tile*> came_from;
-    std::unordered_map<Tile*, double> cost_so_far;
+    std::unordered_map<sf::Vector2i, sf::Vector2i> came_from;
+    std::unordered_map<sf::Vector2i, double> cost_so_far;
 
-    GridWithWeights grid = GridWithWeights(117, 63);
+    GridWithWeights* grid;
 
 public:
     friend class Tile;
@@ -112,22 +90,17 @@ public:
     ~Node_map();
 
     void addTile();
-    void create_Unordered_map();
+    void create_static_data();
 
     void saveTree(const std::string filename);
     void loadTree(const std::string filename);
 
-    double heuristic(GridLocation a,GridLocation b);
-    template<typename Location, typename Graph>
-    void aStar(Graph graph,
-               Location start,
-               Location goal);
+    double heuristic(sf::Vector2i a,sf::Vector2i b);
 
-    void aStar_tile(Tile* start, Tile* goal);
-    void func();
+    void aStar_tile(sf::Vector2i start, sf::Vector2i goal);
 
     void update();
     void renderMap(sf::RenderTarget* target);
-    void render(sf::RenderTarget* target);
+    void renderMouse(sf::RenderTarget* target);
 };
 #endif //LABPROGRAMMAZIONE_NODE_MAP_H

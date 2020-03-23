@@ -27,21 +27,20 @@ class Tile;
 
 struct GridLocation
 {
-    int x;
-    int y;
+    int x, y;
 };
 
-
 namespace std {
-        // implement hash function so we can put GridLocation into an unordered_set */
-    template <> struct hash<GridLocation> {
-        typedef GridLocation argument_type;
+/* implement hash function so we can put GridLocation into an unordered_set */
+    template <> struct hash<sf::Vector2i> {
+        typedef sf::Vector2i argument_type;
         typedef std::size_t result_type;
-        std::size_t operator()(const GridLocation& id) const noexcept {
+        std::size_t operator()(const sf::Vector2i& id) const noexcept {
             return std::hash<int>()(id.x ^ (id.y << 4));
         }
     };
 }
+
 
 template<typename T, typename priority_t>
 struct PriorityQueue {
@@ -64,34 +63,17 @@ struct PriorityQueue {
     }
 };
 
-
-template<typename Location>
-std::vector<Location> reconstruct_path(
-        Location start, Location goal,
-        std::unordered_map<Location, Location> came_from
-) {
-    std::vector<Location> path;
-    Location current = goal;
-    while (current != start) {
-        path.push_back(current);
-        current = came_from[current];
-    }
-    path.push_back(start); // optional
-    std::reverse(path.begin(), path.end());
-    return path;
-}
-
 //STAVO PROVANDO A TOGLIERE IL TIPO LOCATION, IN MODO DA NON DOVER USARE I
 /*
 template<typename Graph>
 void a_star_search
         (Graph graph,
-         GridLocation start,
-         GridLocation goal,
-         std::unordered_map<GridLocation, GridLocation>& came_from,
-         std::unordered_map<GridLocation, double>& cost_so_far)
+         sf::Vector2i start,
+         sf::Vector2i goal,
+         std::unordered_map<sf::Vector2i, sf::Vector2i>& came_from,
+         std::unordered_map<sf::Vector2i, double>& cost_so_far)
 {
-    PriorityQueue<GridLocation, double> frontier;
+    PriorityQueue<sf::Vector2i, double> frontier;
     frontier.put(start, 0);
 
     //std::unordered_map<Location, Location> came_from;
@@ -101,13 +83,13 @@ void a_star_search
     cost_so_far[start] = 0;
 
     while (!frontier.empty()) {
-        GridLocation current = frontier.get();
+        sf::Vector2i current = frontier.get();
 
         if (current.x == goal.x && current.y == goal.y) {
             break;
         }
 
-        for (GridLocation next : graph.neighbors(current)) {
+        for (sf::Vector2i next : graph.neighbors(current)) {
             double new_cost = cost_so_far[current] + graph.cost(current, next);
             if (cost_so_far.find(next) == cost_so_far.end()
                 || new_cost < cost_so_far[next]) {
@@ -124,12 +106,12 @@ class Tile
 {
 public:
     Tile(float x, float y, float width, float heigth, int peso = 1);
-    Tile(GridLocation in, float gridSize = 11.f, int peso = 1);
+    Tile(sf::Vector2i in, float gridSize = 11.f, int peso = 1);
     Tile(int x, int y, float gridSize = 11.f, int peso = 1);
     sf::Vector2f getPosition();
     sf::RectangleShape shape;
     sf::Texture tex;
-    GridLocation location{};
+    sf::Vector2i location{};
     std::string id;
 
     int weight;

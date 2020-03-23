@@ -64,7 +64,7 @@ void Game::render(sf::RenderTarget* target)
     hero->drawPlayer(target);
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-        mappa->render(target);
+        mappa->renderMouse(target);
 
     window->display();
 }

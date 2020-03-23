@@ -23,19 +23,12 @@ Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY)
 
     loadTree("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Mappa.txt");
 
-    //creo il grafo da passare a a_star_search
-    //grid.width = 117;
-    //grid.height = 63;
-
-    //grid = new SquareGrid{117,63};
-
-    //func();
+    grid = new GridWithWeights(117,63);
 }
 
 void Node_map::update()
 {
-    this->mousePosScreen = sf::Mouse::getPosition();
-    this->mousePosWindow = sf::Mouse::getPosition(*window);
+
     this->mousePosView = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
     this->mousePosGrid =
             sf::Vector2i(
@@ -45,7 +38,7 @@ void Node_map::update()
 
 }
 
-void Node_map::render(sf::RenderTarget* target)
+void Node_map::renderMouse(sf::RenderTarget* target)
 {
     mouse_text.setPosition(this->mousePosView.x, this->mousePosView.y - 10);
     std::stringstream ss;
@@ -53,9 +46,6 @@ void Node_map::render(sf::RenderTarget* target)
     mouse_text.setString(ss.str());
     mouse_text.setFillColor(sf::Color::Red);
     target->draw(mouse_text);
-
-    //Render mappa
-    renderMap(target);
 }
 
 bool Node_map::checkIntersect(Tile* _tile)
@@ -80,7 +70,7 @@ Node_map::~Node_map()
     for(auto itr : tiles)
         delete itr;
 
-    //delete grid;
+    delete grid;
 }
 
 void Node_map::renderMap(sf::RenderTarget *target)
@@ -128,21 +118,35 @@ void Node_map::loadTree(const std::string filename)
     }
 
     //Creo l'unordered map da dare al grafo
-    create_Unordered_map();
+    create_static_data();
 
-    std::cout << "Size Graph (Bytes): " << tiles_graph.size();
+    std::cout << "Size Graph (Num Elements): " << tiles_graph.size() << std::endl;
 }
 
-void Node_map::create_Unordered_map()
-{
-    for(auto itr : tiles)
-    {
-        std::pair<Tile*,std::vector<Tile*>> pair(itr,get_neighbor(itr));
-        tiles_graph.emplace(pair);
-        //grid_in_map.insert(itr->location);
-    }
+void Node_map::create_static_data() {
+    //CREATING I SETS PER LE TILE DENTRO E FUORI DALLA MAPPA
 
-    std::cout << "UNORDERED MAP CREATED" << std::endl;
+    //Creo il tiles_graph
+    for (auto itr : tiles) {
+        std::pair<Tile *, std::vector<Tile *>> pair(itr, get_neighbor(itr));
+        tiles_graph.emplace(pair);
+        grid_in_map.insert(itr->location);
+    }
+    std::cout << "NUMERO DI GRIDPOSITION DENTRO LA MAPPA " << grid_in_map.size() << std::endl;
+
+    //Creo tutte le gridposition
+    for (int i = 0; i < 117; i++) {
+        for (int j = 0; j < 63; j++) {
+            all_grid.insert(sf::Vector2i(i, j));
+        }
+    }
+    std::cout << "NUMERO DI GRIDPOSITION " << all_grid.size() << std::endl;
+
+    //Creo le griglie fuori dalla mappa che mi interessa, così la uso nella GridWithWeights
+    for(const auto it : all_grid)
+        if(grid_in_map.find(it) == grid_in_map.end())
+            grid_out_map.insert(it);
+    std::cout << "NUMERO DI GRIDPOSITION OUT MAP" << grid_out_map.size() << std::endl;
 
 }
 
@@ -173,74 +177,32 @@ std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
 
     return temp_vector;
 }
-/*
-template<typename Location, typename Graph>
-void Node_map::aStar(Graph graph,
-                     Location start,
-                     Location goal)
-{
-        PriorityQueue<Location, double> frontier;
-        frontier.put(start, 0);
 
-        this->came_from[start] = start;
-        this->cost_so_far[start] = 0;
-
-        while (!frontier.empty()) {
-            Location current = frontier.get();
-
-            if (current == goal){
-                break;
-            }
-
-            for (Location next : graph.neighbors(current)) {
-                double new_cost = cost_so_far[current] + graph.cost(current, next);
-                if (cost_so_far.find(next) == cost_so_far.end()
-                    || new_cost < cost_so_far[next]) {
-                    cost_so_far[next] = new_cost;
-                    double priority = new_cost + heuristic(next, goal);
-                    frontier.put(next, priority);
-                    came_from[next] = current;
-                }
-            }
-        }
-}
-
-*/
 //======================================================================================================================
 
-void Node_map::func() {
-
-    Tile* a = new Tile(GridLocation{13,17});
-    Tile* b = new Tile(GridLocation{17,29});
-    //GridLocation goal{17,29};
-    aStar_tile(a, b);
 
 
-    //dijkstra_search(grid, start, goal, came_from, cost_so_far);
-}
-
-double Node_map::heuristic(GridLocation a, GridLocation b) {
+double Node_map::heuristic(sf::Vector2i a, sf::Vector2i b) {
     return std::abs(a.x - b.x) + std::abs(a.y - b.y);
 }
 
-void Node_map::aStar_tile(Tile *start, Tile *goal)
+void Node_map::aStar_tile(sf::Vector2i start, sf::Vector2i goal)
 {
-    PriorityQueue<Tile*, double> frontier;
-    frontier.put(start, 0);
+  //  PriorityQueue<sf::Vector2i, double> frontier;
+//    frontier.put(start, 0);
 
-    came_from[start] = start;
-    cost_so_far[start] = 0;
+    //came_from[start] = start;
+   // cost_so_far[start] = 0;
 
-    while(!frontier.empty()) {
-        Tile *current = frontier.get();
+    /*while(!frontier.empty()) {
+        sf::Vector2i current = frontier.get();
 
         if(current == goal)
             break;
 
-        for(Tile* next : get_neighbor(current))
+        for(Tile* next : )
         {
-            double new_cost = cost_so_far[current] +
-                              1; //1 perché costa sempre 1 attraversare una tile. Di fatto questo è più dijstrka
+            double new_cost = cost_so_far[current] + 1; //1 perché costa sempre 1 attraversare una tile. Di fatto questo è più dijstrka
 
             if (cost_so_far.find(next) == cost_so_far.end() || new_cost < cost_so_far[next])
                 cost_so_far[next] = new_cost;
@@ -251,19 +213,5 @@ void Node_map::aStar_tile(Tile *start, Tile *goal)
             came_from[next] = current;
         }
     }
-
+*/
 }
-
-template<typename Location, typename Graph>
-void Node_map::aStar(Graph graph, Location start, Location goal) {
-
-}
-
-/*
-bool checkTile(Tile * check) {
-    for(const auto itr : tiles_graph) {
-        if (itr.first->id == check->id)
-            return true;
-    }
-    return false;
-}*/
