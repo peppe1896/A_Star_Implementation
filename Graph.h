@@ -31,8 +31,9 @@ struct GridLocation
     int y;
 };
 
+
 namespace std {
-/* implement hash function so we can put GridLocation into an unordered_set */
+        // implement hash function so we can put GridLocation into an unordered_set */
     template <> struct hash<GridLocation> {
         typedef GridLocation argument_type;
         typedef std::size_t result_type;
@@ -63,9 +64,6 @@ struct PriorityQueue {
     }
 };
 
-inline double heuristic(GridLocation a, GridLocation b) {
-    return std::abs(a.x - b.x) + std::abs(a.y - b.y);
-}
 
 template<typename Location>
 std::vector<Location> reconstruct_path(
@@ -126,8 +124,8 @@ class Tile
 {
 public:
     Tile(float x, float y, float width, float heigth, int peso = 1);
-    Tile(GridLocation in, float gridSize, int peso = 1);
-    Tile(int x, int y, float gridSize, int peso = 1);
+    Tile(GridLocation in, float gridSize = 11.f, int peso = 1);
+    Tile(int x, int y, float gridSize = 11.f, int peso = 1);
     sf::Vector2f getPosition();
     sf::RectangleShape shape;
     sf::Texture tex;
@@ -135,7 +133,7 @@ public:
     std::string id;
 
     int weight;
-    void setColor(sf::Color colorchar);
+    void setColor(sf::Color colortile);
 
     bool operator==(Tile* a);
     bool operator!=(Tile* a);

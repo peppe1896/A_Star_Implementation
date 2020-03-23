@@ -29,6 +29,7 @@ Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY)
 
     //grid = new SquareGrid{117,63};
 
+    //func();
 }
 
 void Node_map::update()
@@ -138,9 +139,11 @@ void Node_map::create_Unordered_map()
     {
         std::pair<Tile*,std::vector<Tile*>> pair(itr,get_neighbor(itr));
         tiles_graph.emplace(pair);
+        //grid_in_map.insert(itr->location);
     }
 
     std::cout << "UNORDERED MAP CREATED" << std::endl;
+
 }
 
 std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
@@ -170,13 +173,12 @@ std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
 
     return temp_vector;
 }
-
+/*
 template<typename Location, typename Graph>
 void Node_map::aStar(Graph graph,
                      Location start,
                      Location goal)
 {
-
         PriorityQueue<Location, double> frontier;
         frontier.put(start, 0);
 
@@ -186,7 +188,7 @@ void Node_map::aStar(Graph graph,
         while (!frontier.empty()) {
             Location current = frontier.get();
 
-            if (current == goal) {
+            if (current == goal){
                 break;
             }
 
@@ -201,35 +203,67 @@ void Node_map::aStar(Graph graph,
                 }
             }
         }
+}
 
-    /*
+*/
+//======================================================================================================================
+
+void Node_map::func() {
+
+    Tile* a = new Tile(GridLocation{13,17});
+    Tile* b = new Tile(GridLocation{17,29});
+    //GridLocation goal{17,29};
+    aStar_tile(a, b);
+
+
+    //dijkstra_search(grid, start, goal, came_from, cost_so_far);
+}
+
+double Node_map::heuristic(GridLocation a, GridLocation b) {
+    return std::abs(a.x - b.x) + std::abs(a.y - b.y);
+}
+
+void Node_map::aStar_tile(Tile *start, Tile *goal)
+{
     PriorityQueue<Tile*, double> frontier;
     frontier.put(start, 0);
 
-    std::pair<Tile*, Tile*> start_tile;
-    std::pair<Tile*, double> start_cost;
+    came_from[start] = start;
+    cost_so_far[start] = 0;
 
-    came_from->emplace(start_tile);
-    cost_so_far->emplace(start_cost);
+    while(!frontier.empty()) {
+        Tile *current = frontier.get();
 
-    while (!frontier.empty()) {
-        Tile* current = frontier.get();
-
-        if ((current->location.x == goal->location.x) && (current->location.y == goal->location.y))
-        {
+        if(current == goal)
             break;
-        }
 
-        for (Tile* next : get_neighbor(current)) {
-            double new_cost = cost_so_far->at(current) + grid.cost(current, next);
-            if (cost_so_far->find(next) == cost_so_far->end()
-                || new_cost < cost_so_far->at(next)) {
-                cost_so_far->at(next) = new_cost;
-                double priority = new_cost + heuristic(next, goal);
-                frontier.put(next, priority);
-                came_from->at(next) = current;
-            }
+        for(Tile* next : get_neighbor(current))
+        {
+            double new_cost = cost_so_far[current] +
+                              1; //1 perché costa sempre 1 attraversare una tile. Di fatto questo è più dijstrka
+
+            if (cost_so_far.find(next) == cost_so_far.end() || new_cost < cost_so_far[next])
+                cost_so_far[next] = new_cost;
+
+            double priority = new_cost + 1;
+            frontier.put(next, priority);
+
+            came_from[next] = current;
         }
-    }*/
+    }
+
 }
 
+template<typename Location, typename Graph>
+void Node_map::aStar(Graph graph, Location start, Location goal) {
+
+}
+
+/*
+bool checkTile(Tile * check) {
+    for(const auto itr : tiles_graph) {
+        if (itr.first->id == check->id)
+            return true;
+    }
+    return false;
+}*/
