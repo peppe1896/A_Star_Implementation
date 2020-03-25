@@ -5,8 +5,18 @@
 #ifndef LABPROGRAMMAZIONE_NODE_MAP_H
 #define LABPROGRAMMAZIONE_NODE_MAP_H
 
-//#include "A_Star.h"
 #include "Graph.h"
+
+namespace std {
+/* implement hash function so we can put GridLocation(VECTOR2I) into an unordered_set */
+    template <> struct hash<sf::Vector2i> {
+        typedef sf::Vector2i argument_type;
+        typedef std::size_t result_type;
+        std::size_t operator()(const sf::Vector2i& id) const noexcept {
+            return std::hash<int>()(id.x ^ (id.y << 4));
+        }
+    };
+}
 
 static std::unordered_map<Tile*, std::vector<Tile*>> tiles_graph;
 static std::unordered_set<sf::Vector2i> grid_in_map;
@@ -49,28 +59,6 @@ struct PriorityQueue {
         return best_item;
     }
 };
-
-/* PRIORITY QUEUE "SPECIALIZZATA" CON INT E VECTOR2I(NON FUNZIONA!!!)
-struct PriorityQueue {
-    typedef std::pair<int, sf::Vector2i> PQElement;
-    std::priority_queue<PQElement, std::vector<PQElement>,
-            std::greater<PQElement>> elements;
-
-    inline bool empty() const {
-        return elements.empty();
-    }
-
-    inline void put(sf::Vector2i item, int priority) {
-        elements.emplace(priority, item);
-    }
-
-    sf::Vector2i get() {
-        sf::Vector2i best_item = elements.top().second;
-        elements.pop();
-        return best_item;
-    }
-};
-*/
 
 static double cost(sf::Vector2i from_node, sf::Vector2i to_node) {
     if(grid_out_map.find(to_node) == grid_out_map.end())

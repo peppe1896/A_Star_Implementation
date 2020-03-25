@@ -12,6 +12,7 @@ private:
     sf::RenderWindow* window;
     sf::VideoMode vMode;
     sf::Event event{};
+
     //Mappa
     Node_map* mappa;
 

@@ -23,23 +23,11 @@
 #include <SFML/Audio.hpp>
 
 
-class Tile;
-
 struct GridLocation //preferisco usare sf::Vector2i
 {
     int x, y;
 };
 
-namespace std {
-/* implement hash function so we can put GridLocation into an unordered_set */
-    template <> struct hash<sf::Vector2i> {
-        typedef sf::Vector2i argument_type;
-        typedef std::size_t result_type;
-        std::size_t operator()(const sf::Vector2i& id) const noexcept {
-            return std::hash<int>()(id.x ^ (id.y << 4));
-        }
-    };
-}
 
 //======================================================================================================================
 
