@@ -183,9 +183,10 @@ double Node_map::heuristic(sf::Vector2i a, sf::Vector2i b) {
 }
 
 template<typename Location, typename Graph>
-void Node_map::aStar_tile(Graph graph, Location start, Location goal)
+void Node_map::aStar_tile(Graph graph,const Location start, const Location goal)
 {
-    /*PriorityQueue<Location, double> frontier;
+
+    PriorityQueue frontier;
     frontier.put(start, 0);
 
     came_from[start] = start;
@@ -209,13 +210,15 @@ void Node_map::aStar_tile(Graph graph, Location start, Location goal)
             }
         }
     }
-*/
 }
 
 void Node_map::func()
 {
+    const sf::Vector2i hello(28,47);
+    const sf::Vector2i zzang(25,41);
+
     //CALL AD A_STAR, DA IMPOSTARE IN INGRESSO ALLA FUNZIONE LE COORDINATE DA CERCARE.
-    aStar_tile(grid, sf::Vector2i(28,47),sf::Vector2i(25,41));
+    aStar_tile(grid, hello , zzang);
 
     for(const auto& itr : grid_out_map)
         std::cout << itr.x << "<->" << itr.y << std::endl;
@@ -235,3 +238,4 @@ Tile *Node_map::gridToTile(sf::Vector2i in) {
             return itr.first;
     return nullptr;
 }
+

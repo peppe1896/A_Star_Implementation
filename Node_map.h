@@ -17,7 +17,10 @@ namespace std {
         }
     };
 }
-
+static bool operator<(const sf::Vector2i& a, const sf::Vector2i& b)
+{
+    return std::tie(a.x, a.y) < std::tie(b.x, b.y);
+}
 static std::unordered_map<Tile*, std::vector<Tile*>> tiles_graph;
 static std::unordered_set<sf::Vector2i> grid_in_map;
 static std::unordered_set<sf::Vector2i> grid_out_map;
@@ -38,12 +41,26 @@ static std::vector<sf::Vector2i> neighbors(sf::Vector2i id)  {
 
     return results;
 }
+typedef std::pair<sf::Vector2i, double> PQElement;
+template<typename T>
 
+class mycomparison
+{
+public:
+    mycomparison() {}
+    bool operator()(const PQElement & a, const PQElement &b)
+    {
+        return true;
+    }
+
+
+};
+/*
 template<typename T, typename priority_t>
 struct PriorityQueue {
     typedef std::pair<priority_t, T> PQElement;
     std::priority_queue<PQElement, std::vector<PQElement>,
-            std::greater<PQElement>> elements;
+    std::greater<PQElement> > elements;
 
     inline bool empty() const {
         return elements.empty();
@@ -58,6 +75,28 @@ struct PriorityQueue {
         elements.pop();
         return best_item;
     }
+
+};
+*/
+
+struct PriorityQueue {
+    std::priority_queue<PQElement, std::vector<PQElement>,
+    mycomparison<PQElement> > elements;
+
+    inline bool empty() const {
+        return elements.empty();
+    }
+
+    inline void put(sf::Vector2i item, double priority) {
+        elements.push(std::make_pair(item, priority));
+    }
+
+    sf::Vector2i get() {
+        sf::Vector2i best_item = elements.top().first;
+        elements.pop();
+        return best_item;
+    }
+
 };
 
 static double cost(sf::Vector2i from_node, sf::Vector2i to_node) {
@@ -145,7 +184,7 @@ private:
     double heuristic(sf::Vector2i a, sf::Vector2i b);
 public:
     template<typename Location, typename Graph>
-    void aStar_tile(Graph graph, Location start, Location goal);
+    void aStar_tile(Graph graph, const Location start, const Location goal);
 
     //Accessors
     Tile* gridToTile(sf::Vector2i grid);//prende fornisce un puntatore a una tile esistente, altrimenti nullptr
