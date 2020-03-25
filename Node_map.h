@@ -29,7 +29,7 @@ static std::vector<sf::Vector2i> neighbors(sf::Vector2i id)  {
     Tile *_tile = new Tile(id);
     std::vector<Tile *> neig_tile = tiles_graph.at(_tile);
 
-    std::cout << "SQUAREGRID::CREATING VECTOR NEIGHBORS" << std::endl;
+    std::cout << "SQUAREGRID::CREATING VECTOR NEIGHBORS FROM STATIC FUNCTION" << std::endl;
 
     for (auto itr : neig_tile) {
         results.push_back(itr->location);
@@ -78,7 +78,7 @@ struct SquareGrid {
         Tile* _tile = new Tile(id);
         std::vector<Tile*> neig_tile = tiles_graph.at(_tile);
 
-        std::cout << "SQUAREGRID::CREATING VECTOR NEIGHBORS" << std::endl;
+        std::cout << "SQUAREGRID::CREATING VECTOR NEIGHBORS FROM SQUAREGRID" << std::endl;
 
         for(auto itr : neig_tile) {
             results.push_back(itr->location);
