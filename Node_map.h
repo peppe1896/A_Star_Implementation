@@ -17,11 +17,9 @@ namespace std {
         }
     };
 }
-static bool operator<(const sf::Vector2i& a, const sf::Vector2i& b)
-{
-    return std::tie(a.x, a.y) < std::tie(b.x, b.y);
-}
+
 static std::unordered_map<Tile*, std::vector<Tile*>> tiles_graph;
+
 static std::unordered_set<sf::Vector2i> grid_in_map;
 static std::unordered_set<sf::Vector2i> grid_out_map;
 static std::unordered_set<sf::Vector2i> all_grid;
@@ -41,26 +39,27 @@ static std::vector<sf::Vector2i> neighbors(sf::Vector2i id)  {
 
     return results;
 }
-typedef std::pair<sf::Vector2i, double> PQElement;
-template<typename T>
 
+typedef std::pair<double,sf::Vector2i> PQElement;
+
+template<typename T>
 class mycomparison
 {
 public:
     mycomparison() {}
     bool operator()(const PQElement & a, const PQElement &b)
     {
+        std::cout << "Compare";
         return true;
     }
 
-
 };
-/*
+
 template<typename T, typename priority_t>
 struct PriorityQueue {
-    typedef std::pair<priority_t, T> PQElement;
+
     std::priority_queue<PQElement, std::vector<PQElement>,
-    std::greater<PQElement> > elements;
+    mycomparison<PQElement> > elements;
 
     inline bool empty() const {
         return elements.empty();
@@ -77,9 +76,11 @@ struct PriorityQueue {
     }
 
 };
-*/
+
+/*
 
 struct PriorityQueue {
+
     std::priority_queue<PQElement, std::vector<PQElement>,
     mycomparison<PQElement> > elements;
 
@@ -98,6 +99,7 @@ struct PriorityQueue {
     }
 
 };
+*/
 
 static double cost(sf::Vector2i from_node, sf::Vector2i to_node) {
     if(grid_out_map.find(to_node) == grid_out_map.end())

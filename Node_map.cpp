@@ -185,8 +185,7 @@ double Node_map::heuristic(sf::Vector2i a, sf::Vector2i b) {
 template<typename Location, typename Graph>
 void Node_map::aStar_tile(Graph graph,const Location start, const Location goal)
 {
-
-    PriorityQueue frontier;
+    PriorityQueue<Location,double> frontier;
     frontier.put(start, 0);
 
     came_from[start] = start;
@@ -199,8 +198,8 @@ void Node_map::aStar_tile(Graph graph,const Location start, const Location goal)
             break;
         }
 
-        for (Location next : graph->neighbors(current)) {
-            double new_cost = cost_so_far[current] + graph->cost(current, next);
+        for (Location next : neighbors(current)) {
+            double new_cost = cost_so_far[current] + cost(current, next);
             if (cost_so_far.find(next) == cost_so_far.end()
                 || new_cost < cost_so_far[next]) {
                 cost_so_far[next] = new_cost;
@@ -214,14 +213,13 @@ void Node_map::aStar_tile(Graph graph,const Location start, const Location goal)
 
 void Node_map::func()
 {
-    const sf::Vector2i hello(28,47);
-    const sf::Vector2i zzang(25,41);
+    const sf::Vector2i start(28,47);
+    const sf::Vector2i end(25,41);
 
-    //CALL AD A_STAR, DA IMPOSTARE IN INGRESSO ALLA FUNZIONE LE COORDINATE DA CERCARE.
-    aStar_tile(grid, hello , zzang);
+    aStar_tile(grid, start , end);
 
-    for(const auto& itr : grid_out_map)
-        std::cout << itr.x << "<->" << itr.y << std::endl;
+    for(const auto& itr : came_from)
+        std::cout << itr.first.x << "<->" << itr.first.y << std::endl;
 
     for(const auto &itr : grid_in_map)
         std::cout << itr.x << "<->" << itr.y << std::endl;
