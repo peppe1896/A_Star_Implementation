@@ -79,7 +79,7 @@ void Node_map::renderMap(sf::RenderTarget *target)
         target->draw(itr->shape);
 }
 
-void Node_map::saveTree(const std::string filename)
+void Node_map::saveTree(const std::string& filename)
 {
     std::ofstream out_file;
 
@@ -178,40 +178,60 @@ std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
     return temp_vector;
 }
 
-//======================================================================================================================
-
-
-
 double Node_map::heuristic(sf::Vector2i a, sf::Vector2i b) {
     return std::abs(a.x - b.x) + std::abs(a.y - b.y);
 }
 
-void Node_map::aStar_tile(sf::Vector2i start, sf::Vector2i goal)
+template<typename Location, typename Graph>
+void Node_map::aStar_tile(Graph graph, Location start, Location goal)
 {
-  //  PriorityQueue<sf::Vector2i, double> frontier;
-//    frontier.put(start, 0);
+    /*PriorityQueue<Location, double> frontier;
+    frontier.put(start, 0);
 
-    //came_from[start] = start;
-   // cost_so_far[start] = 0;
+    came_from[start] = start;
+    cost_so_far[start] = 0;
 
-    /*while(!frontier.empty()) {
-        sf::Vector2i current = frontier.get();
+    while (!frontier.empty()) {
+        Location current = frontier.get();
 
-        if(current == goal)
+        if (current == goal) {
             break;
+        }
 
-        for(Tile* next : )
-        {
-            double new_cost = cost_so_far[current] + 1; //1 perché costa sempre 1 attraversare una tile. Di fatto questo è più dijstrka
-
-            if (cost_so_far.find(next) == cost_so_far.end() || new_cost < cost_so_far[next])
+        for (Location next : graph->neighbors(current)) {
+            double new_cost = cost_so_far[current] + graph->cost(current, next);
+            if (cost_so_far.find(next) == cost_so_far.end()
+                || new_cost < cost_so_far[next]) {
                 cost_so_far[next] = new_cost;
-
-            double priority = new_cost + 1;
-            frontier.put(next, priority);
-
-            came_from[next] = current;
+                double priority = new_cost + heuristic(next, goal);
+                frontier.put(next, priority);
+                came_from[next] = current;
+            }
         }
     }
 */
+}
+
+void Node_map::func()
+{
+    //CALL AD A_STAR, DA IMPOSTARE IN INGRESSO ALLA FUNZIONE LE COORDINATE DA CERCARE.
+    aStar_tile(grid, sf::Vector2i(28,47),sf::Vector2i(25,41));
+
+    for(const auto& itr : grid_out_map)
+        std::cout << itr.x << "<->" << itr.y << std::endl;
+
+    for(const auto &itr : grid_in_map)
+        std::cout << itr.x << "<->" << itr.y << std::endl;
+
+
+    for(const auto &itr : all_grid)
+        std::cout << itr.x << "<->" << itr.y << std::endl;
+
+}
+
+Tile *Node_map::gridToTile(sf::Vector2i in) {
+    for(const auto& itr : tiles_graph)
+        if(itr.first->location == in)
+            return itr.first;
+    return nullptr;
 }

@@ -25,6 +25,8 @@ Game::Game()
 
     //Graph
     mappa = new Node_map(window, gridSize_x, gridSize_y);
+
+    //mappa->func();
 }
 
 Game::~Game() {}
