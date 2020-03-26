@@ -128,7 +128,7 @@ void Node_map::create_static_data() {
 
     //Creo il tiles_graph
     for (auto itr : tiles) {
-        std::pair<Tile *, std::vector<Tile *>> pair(itr, get_neighbor(itr));
+        std::pair<sf::Vector2i, std::vector<sf::Vector2i>> pair(itr->location, get_neighbor(itr->location));
         tiles_graph.emplace(pair);
         grid_in_map.insert(itr->location);
     }
@@ -150,29 +150,30 @@ void Node_map::create_static_data() {
 
 }
 
-std::vector<Tile *> Node_map::get_neighbor(Tile* _tile)
+std::vector<sf::Vector2i> Node_map::get_neighbor(sf::Vector2i in)
 {
+    Tile* _tile = new Tile(in);
     Tile* N = new Tile(_tile->location.x, _tile->location.y - 1, gridSizeX);
     Tile* S = new Tile(_tile->location.x, _tile->location.y + 1, gridSizeX);
     Tile* E = new Tile(_tile->location.x + 1, _tile->location.y, gridSizeX);
     Tile* W = new Tile(_tile->location.x - 1, _tile->location.y, gridSizeX);
 
-    std::vector<Tile*> temp_vector;
+    std::vector<sf::Vector2i> temp_vector;
 
     for(auto itr : tiles)
         if(*itr == _tile)
         {
             if (checkIntersect(N))
-                temp_vector.push_back(N);
+                temp_vector.push_back(N->location);
 
             if (checkIntersect(S))
-                temp_vector.push_back(S);
+                temp_vector.push_back(S->location);
 
             if (checkIntersect(E))
-                temp_vector.push_back(E);
+                temp_vector.push_back(E->location);
 
             if (checkIntersect(W))
-                temp_vector.push_back(W);
+                temp_vector.push_back(W->location);
         }
 
     return temp_vector;
@@ -191,17 +192,21 @@ void Node_map::aStar_tile(Graph graph,const Location start, const Location goal)
     came_from[start] = start;
     cost_so_far[start] = 0;
 
-    while (!frontier.empty()) {
+    while (!frontier.empty())
+    {
         Location current = frontier.get();
 
-        if (current == goal) {
+        if (current == goal)
+        {
             break;
         }
 
-        for (Location next : neighbors(current)) {
-            double new_cost = cost_so_far[current] + cost(current, next);
+        for (Location next : graph->neighbors(current))
+        {
+            double new_cost = cost_so_far[current] + graph->cost(current, next);
             if (cost_so_far.find(next) == cost_so_far.end()
-                || new_cost < cost_so_far[next]) {
+                || new_cost < cost_so_far[next])
+            {
                 cost_so_far[next] = new_cost;
                 double priority = new_cost + heuristic(next, goal);
                 frontier.put(next, priority);
@@ -220,20 +225,12 @@ void Node_map::func()
 
     for(const auto& itr : came_from)
         std::cout << itr.first.x << "<->" << itr.first.y << std::endl;
-
+/*
     for(const auto &itr : grid_in_map)
         std::cout << itr.x << "<->" << itr.y << std::endl;
 
-
     for(const auto &itr : all_grid)
         std::cout << itr.x << "<->" << itr.y << std::endl;
-
-}
-
-Tile *Node_map::gridToTile(sf::Vector2i in) {
-    for(const auto& itr : tiles_graph)
-        if(itr.first->location == in)
-            return itr.first;
-    return nullptr;
+*/
 }
 

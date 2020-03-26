@@ -18,7 +18,7 @@ namespace std {
     };
 }
 
-static std::unordered_map<Tile*, std::vector<Tile*>> tiles_graph;
+static std::unordered_map<sf::Vector2i, std::vector<sf::Vector2i>> tiles_graph;
 
 static std::unordered_set<sf::Vector2i> grid_in_map;
 static std::unordered_set<sf::Vector2i> grid_out_map;
@@ -27,14 +27,14 @@ static std::unordered_set<sf::Vector2i> all_grid;
 static std::vector<sf::Vector2i> neighbors(sf::Vector2i id)  {
     std::vector<sf::Vector2i> results;
 
-    Tile *_tile = new Tile(id);
-    std::vector<Tile *> neig_tile = tiles_graph.at(_tile);
+    //Tile *_tile = new Tile(id);
+    std::vector<sf::Vector2i> neig_tile = tiles_graph.at(id);
 
     std::cout << "SQUAREGRID::CREATING VECTOR NEIGHBORS FROM STATIC FUNCTION" << std::endl;
 
     for (auto itr : neig_tile) {
-        results.push_back(itr->location);
-        std::cout << itr->location.x << "--" << itr->location.y << std::endl;
+        results.push_back(itr);
+        std::cout << itr.x << "--" << itr.y << std::endl;
     }
 
     return results;
@@ -116,16 +116,17 @@ struct SquareGrid {
     std::vector<sf::Vector2i> neighbors(sf::Vector2i id) const {
         std::vector<sf::Vector2i> results;
 
-        Tile* _tile = new Tile(id);
-        std::vector<Tile*> neig_tile = tiles_graph.at(_tile);
+        //Tile *_tile = new Tile(id);
+        std::vector<sf::Vector2i> neig_tile = tiles_graph.at(id);
 
-        std::cout << "SQUAREGRID::CREATING VECTOR NEIGHBORS FROM SQUAREGRID" << std::endl;
+        std::cout << "SQUAREGRID::CREATING VECTOR NEIGHBORS FROM GRAPH FUNCTION" << std::endl;
 
-        for(auto itr : neig_tile) {
-            results.push_back(itr->location);
-            std::cout << itr->location.x << "--" << itr->location.y << std::endl;
+        for (auto itr : neig_tile)
+        {
+            results.push_back(itr);
+            std::cout << itr.x << "--" << itr.y << std::endl;
         }
-        //TODO COntrolla che funziona il ciclo
+
         return results;
     }
 };
@@ -162,7 +163,7 @@ private:
 
     //Look in vector tiles and get the neighbors of any existing tile
     bool checkIntersect(Tile* rect);
-    std::vector<Tile*> get_neighbor(Tile* tile);
+    std::vector<sf::Vector2i> get_neighbor(sf::Vector2i in);
 
     //Graph and maps that A* need
     std::unordered_map<sf::Vector2i, sf::Vector2i> came_from;
@@ -187,9 +188,6 @@ private:
 public:
     template<typename Location, typename Graph>
     void aStar_tile(Graph graph, const Location start, const Location goal);
-
-    //Accessors
-    Tile* gridToTile(sf::Vector2i grid);//prende fornisce un puntatore a una tile esistente, altrimenti nullptr
 
     //Draw & update functions
     void update();
