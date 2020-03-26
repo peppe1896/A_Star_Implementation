@@ -218,13 +218,18 @@ void Node_map::aStar_tile(Graph graph,const Location start, const Location goal)
 
 void Node_map::func()
 {
-    const sf::Vector2i start(28,47);
+    const sf::Vector2i start(8,44);
     const sf::Vector2i end(25,41);
 
     aStar_tile(grid, start , end);
 
-    for(const auto& itr : came_from)
+    std::cout << "==============================================================================="
+                 "\n\n\nCAME_FROM: \n\n\n ================================"
+                 "===============================================\n";
+    for(const auto& itr : cost_so_far)
         std::cout << itr.first.x << "<->" << itr.first.y << std::endl;
+
+    std::cout << "Elements of CAME FROM " << came_from.size() << std::endl;
 /*
     for(const auto &itr : grid_in_map)
         std::cout << itr.x << "<->" << itr.y << std::endl;

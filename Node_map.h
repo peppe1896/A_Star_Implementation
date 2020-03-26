@@ -49,8 +49,9 @@ public:
     mycomparison() {}
     bool operator()(const PQElement & a, const PQElement &b)
     {
-        std::cout << "Compare";
-        return true;
+        std::cout << "Compare\n";
+        //return std::tie(a.second.x,a.second.y) < std::tie(b.second.x, b.second.y);
+        return a.first < b.first;
     }
 
 };
@@ -76,30 +77,6 @@ struct PriorityQueue {
     }
 
 };
-
-/*
-
-struct PriorityQueue {
-
-    std::priority_queue<PQElement, std::vector<PQElement>,
-    mycomparison<PQElement> > elements;
-
-    inline bool empty() const {
-        return elements.empty();
-    }
-
-    inline void put(sf::Vector2i item, double priority) {
-        elements.push(std::make_pair(item, priority));
-    }
-
-    sf::Vector2i get() {
-        sf::Vector2i best_item = elements.top().first;
-        elements.pop();
-        return best_item;
-    }
-
-};
-*/
 
 static double cost(sf::Vector2i from_node, sf::Vector2i to_node) {
     if(grid_out_map.find(to_node) == grid_out_map.end())
