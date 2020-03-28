@@ -23,8 +23,6 @@ Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY)
 
     loadTree("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Mappa.txt");
 
-    grid = new GridWithWeights(117,63);
-
     start = nullptr;
     goal = nullptr;
 }
@@ -72,13 +70,13 @@ Node_map::~Node_map()
 {
     for(auto itr : tiles)
         delete itr;
-    delete grid;
 }
 
 void Node_map::renderMap(sf::RenderTarget *target)
 {
     for(auto itr : tiles)
-        target->draw(itr->shape);
+        if(itr->color != "blue")
+            target->draw(itr->shape);
 }
 
 void Node_map::saveTree(const std::string& filename)
@@ -185,18 +183,17 @@ double Node_map::heuristic(sf::Vector2i a, sf::Vector2i b) {
     return std::abs(a.x - b.x) + std::abs(a.y - b.y);
 }
 
-std::vector<sf::Vector2i> Node_map::aStar_tile
-        (GridWithWeights* graph,
-         sf::Vector2i start,
-         sf::Vector2i goal)
+void Node_map::aStar_tile
+            (sf::Vector2i start, sf::Vector2i goal)
 {
     PriorityQueue<sf::Vector2i, double> frontier;
     frontier.put(start, 0);
 
+    came_from.clear();
+    cost_so_far.clear();
+
     came_from[start] = start;
     cost_so_far[start] = 0;
-
-    std::vector<sf::Vector2i> end;
 
     while (!frontier.empty())
     {
@@ -207,9 +204,9 @@ std::vector<sf::Vector2i> Node_map::aStar_tile
             break;
         }
 
-        for (sf::Vector2i next : get_neighbor(current))
+        for (sf::Vector2i next : tiles_graph[current])
         {
-            double new_cost = cost_so_far[current] + graph->cost(current, next);
+            double new_cost = cost_so_far[current] + 1;
             if (cost_so_far.find(next) == cost_so_far.end() || new_cost < cost_so_far[next])
             {
                 cost_so_far[next] = new_cost;
@@ -218,38 +215,29 @@ std::vector<sf::Vector2i> Node_map::aStar_tile
                 came_from[next] = current;
             }
         }
-
-        end.push_back(frontier.get());
     }
-    return end;
 }
 
 void Node_map::call_astar()
 {
-    reset_tile();
-    std::vector<sf::Vector2i> print_;
-    print_ = aStar_tile(grid, *start , *goal);
 
-    std::cout << "\n==============================================================================="
-                 "\n\n\nCAME_FROM:\n\n\n"
-                 " ===============================================================================\n";
-    /*for(const auto& itr : cost_so_far)
-        std::cout << itr.first.x << "<->" << itr.first.y << std::endl;
+    aStar_tile(*start , *goal);
 
-    std::cout << "Elements of CAME FROM " << came_from.size() << std::endl;
-*/
-    for(auto& itr : print_)
+    for(auto& itr : reconstruct_path(*start, *goal))
     {
         Tile *tile_to_change = get_tile(itr);
         tile_to_change->setColor(sf::Color::Red);
+        tile_to_change->color = "red";
     }
 }
 
 void Node_map::setStart()
 {
     if(start == nullptr)
-        start = new sf::Vector2i(static_cast<float>(mousePosGrid.x),
+        if(grid_in_map.find(mousePosGrid) != grid_in_map.end())
+            start = new sf::Vector2i(static_cast<float>(mousePosGrid.x),
                                  static_cast<float>(mousePosGrid.y));
+
     if(start != nullptr)
         std::cout <<  "START " << start->x << " |-| " << start->y << std::endl;
 }
@@ -258,18 +246,17 @@ void Node_map::setGoal()
 {
     if(start != nullptr && goal == nullptr)
     {
-        auto *temp1 = new sf::Vector2i(static_cast<float>(mousePosGrid.x),
-                                       static_cast<float>(mousePosGrid.y));
-        if (temp1 != start)
+        if (grid_in_map.find(mousePosGrid) != grid_in_map.end())
         {
-            goal = temp1;
+            auto *temp1 = new sf::Vector2i(static_cast<float>(mousePosGrid.x),
+                                           static_cast<float>(mousePosGrid.y));
+            if (temp1 != start) {
+                goal = temp1;
 
-            std::cout <<  "GOAL " << goal->x << " |-| " << goal->y << std::endl;
+                std::cout << "GOAL " << goal->x << " |-| " << goal->y << std::endl;
 
-            call_astar();
-
-            start = nullptr;
-            goal = nullptr;
+                call_astar();
+            }
         }
     }
 }
@@ -281,6 +268,7 @@ Tile *Node_map::get_tile(sf::Vector2i in)
     for(const auto itr : tiles)
         if(*temp2 == itr)
             return itr;
+
     delete temp2;
 
     return nullptr;
@@ -289,6 +277,30 @@ Tile *Node_map::get_tile(sf::Vector2i in)
 void Node_map::reset_tile()
 {
     for(auto itr : tiles)
+    {
         itr->setColor(sf::Color::Blue);
+        itr->color = "blue";
+    }
 }
 
+std::vector<sf::Vector2i> Node_map::reconstruct_path(sf::Vector2i start, sf::Vector2i goal)
+{
+    std::vector<sf::Vector2i> path;
+    sf::Vector2i current = goal;
+
+    while (current != start)
+    {
+        path.push_back(current);
+        current = came_from[current];
+    }
+
+    path.push_back(start); // optional
+    std::reverse(path.begin(), path.end());
+
+    this->start = nullptr;
+    this->goal = nullptr;
+
+    reset_tile();
+
+    return path;
+}

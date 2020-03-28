@@ -17,6 +17,8 @@ Tile::Tile(float x, float y, float width, float heigth, int peso)
     location.y = static_cast<int>(y/11.f);
 
     weight = peso;
+
+    color = "blue";
 }
 
 Tile::Tile(sf::Vector2i in, float gridSize, int peso)
@@ -33,6 +35,8 @@ Tile::Tile(sf::Vector2i in, float gridSize, int peso)
     location.y = in.y;
 
     weight = peso;
+
+    color = "blue";
 }
 
 Tile::Tile(int x, int y, float gridSize, int peso)
@@ -49,6 +53,8 @@ Tile::Tile(int x, int y, float gridSize, int peso)
     location.y = y;
 
     weight = peso;
+
+    color = "blue";
 }
 
 sf::Vector2f Tile::getPosition()

@@ -26,35 +26,19 @@ static std::unordered_set<sf::Vector2i> grid_in_map;
 static std::unordered_set<sf::Vector2i> grid_out_map;
 static std::unordered_set<sf::Vector2i> all_grid;
 
-static std::vector<sf::Vector2i> neighbors(sf::Vector2i id)  {
-    std::vector<sf::Vector2i> results;
-
-    //Tile *_tile = new Tile(id);
-    std::vector<sf::Vector2i> neig_tile = tiles_graph.at(id);
-
-    std::cout << "SQUAREGRID::CREATING VECTOR NEIGHBORS FROM STATIC FUNCTION" << std::endl;
-
-    for (auto itr : neig_tile) {
-        results.push_back(itr);
-        std::cout << itr.x << "--" << itr.y << std::endl;
-    }
-
-    return results;
-}
-
-typedef std::pair<double, sf::Vector2i> PQElement;
 
 template<typename T>
 class PQComparisor
 {
 public:
     PQComparisor() = default;
-    bool operator()(const PQElement & a, const PQElement &b)
+    bool operator()(const T & a, const T &b)
     {
-        //IL PROBLEMA È IN QUESTO COMPARATORE.
-        //std::cout << "\n " << a.first << "<-compare->" << b.first;
-        return std::tie(a.second.x,a.second.y) < std::tie(b.second.x, b.second.y) && (a.first < b.first);
-        //return a.first < b.first;
+        //std::cout << "\nCompare\n";
+        if(a.first > b.first)
+            return true;
+        else
+            return std::tie(a.second.x,a.second.y) > std::tie(b.second.x, b.second.y);
     }
 
 };
@@ -84,63 +68,6 @@ struct PriorityQueue {
     }
 };
 
-struct SquareGrid {
-    int width, height;
-    //std::array<sf::Vector2i, 4> DIRS = {sf::Vector2i(1, 0), sf::Vector2i(0, -1), sf::Vector2i(-1, 0), sf::Vector2i(0, 1)};
-    SquareGrid(int width_, int height_)
-            : width(width_), height(height_) {}
-/*
-    std::vector<sf::Vector2i> neighbors(sf::Vector2i id) const {
-        std::vector<sf::Vector2i> results;
-
-        for (sf::Vector2i dir : DIRS) {
-            sf::Vector2i next{id.x + dir.x, id.y + dir.y};
-            results.push_back(next);
-        }
-
-
-        if ((id.x + id.y) % 2 == 0) {
-            // aesthetic improvement on square grids
-            std::reverse(results.begin(), results.end());
-        }
-
-        return results;
-
-
-    std::vector<sf::Vector2i> neighbors(sf::Vector2i id) const {
-        std::vector<sf::Vector2i> results;
-
-        //Tile *_tile = new Tile(id);
-        std::vector<sf::Vector2i> neig_tile = tiles_graph.at(id);
-
-        std::cout << "SQUAREGRID::CREATING VECTOR NEIGHBORS FROM GRAPH FUNCTION" << std::endl;
-
-        for (auto itr : neig_tile)
-        {
-            results.push_back(itr);
-            std::cout << itr.x << "--" << itr.y << std::endl;
-        }
-
-        return results;
-        }
-*/
-
-};
-
-struct GridWithWeights: SquareGrid {
-
-    GridWithWeights(int w, int h): SquareGrid(w, h)
-    {
-        std::cout << "GRIDWITHWEIGHT:: CREATED WITH W=" << w << " AND H=" << h<< std::endl;
-    }
-
-    double cost(sf::Vector2i from_node, sf::Vector2i to_node) const {
-        if(grid_in_map.find(to_node) != grid_in_map.end())
-            return 100;
-        return 1;
-    }
-};
-
 static sf::Vector2f mousePosView;
 static sf::Vector2i mousePosGrid;
 
@@ -165,7 +92,6 @@ private:
     //Graph and maps that A* need
     std::unordered_map<sf::Vector2i, sf::Vector2i> came_from;
     std::unordered_map<sf::Vector2i, double> cost_so_far;
-    GridWithWeights* grid;
 
     sf::Vector2i* start;
     sf::Vector2i* goal;
@@ -183,14 +109,12 @@ public:
     void saveTree(const std::string& filename);
 private:
     void create_static_data();
-    void loadTree(const std::string filename);
+    void loadTree(std::string filename);
 
     //A star functions
     double heuristic(sf::Vector2i a, sf::Vector2i b);
 public:
-    std::vector<sf::Vector2i> aStar_tile(GridWithWeights* graph,
-                    sf::Vector2i start,
-                    sf::Vector2i goal);
+    void aStar_tile(sf::Vector2i start, sf::Vector2i goal);
 
     //Draw & update functions
     void update();
@@ -202,5 +126,7 @@ public:
 private:
     void call_astar();
     void reset_tile();
+public:
+    std::vector<sf::Vector2i> reconstruct_path(sf::Vector2i start, sf::Vector2i goal);
 };
 #endif //LABPROGRAMMAZIONE_NODE_MAP_H

@@ -41,6 +41,7 @@ public:
     sf::Texture tex;
     sf::Vector2i location{};
     std::string id;
+    std::string color;
 
     int weight;
     void setColor(sf::Color colortile);
