@@ -26,15 +26,18 @@ Game::Game()
     //Graph
     mappa = new Node_map(window, gridSize_x, gridSize_y);
 
-    mappa->func();
+    start = nullptr;
+    goal = nullptr;
 }
 
 Game::~Game() {}
 
 void Game::update() {
     while (window->pollEvent(event))
+    {
         if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
             window->close();
+    }
 
     hero->handleInput();
 
@@ -42,6 +45,34 @@ void Game::update() {
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
         mappa->addTile();
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+    {
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            if (start == nullptr)
+            {
+                start = new sf::Vector2i(static_cast<float>(mousePosGrid.x) * gridSize_x,
+                                         static_cast<float>(mousePosGrid.y) * gridSize_y);
+            }
+        }
+
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Right) && !sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            if(start != nullptr && goal == nullptr) {
+                auto *temp = new sf::Vector2i(static_cast<float>(mousePosGrid.x) * gridSize_x,
+                                              static_cast<float>(mousePosGrid.y) * gridSize_y);
+                if (temp != start) {
+                    goal = temp;
+
+                    mappa->call_astar(*start, *goal);
+
+                    start = nullptr;
+                    goal = nullptr;
+                }
+            }
+        }
+    }
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::F10))
     {
@@ -60,7 +91,7 @@ void Game::render(sf::RenderTarget* target)
     if(!sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
         target->draw(background);
 
-    if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+    if(!sf::Keyboard::isKeyPressed(sf::Keyboard::M))
         mappa->renderMap(target);
 
     hero->drawPlayer(target);

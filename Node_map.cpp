@@ -28,21 +28,20 @@ Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY)
 
 void Node_map::update()
 {
-
-    this->mousePosView = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
-    this->mousePosGrid =
+    mousePosView = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+    mousePosGrid =
             sf::Vector2i(
-                    static_cast<int>(this->mousePosView.x) / static_cast<int>(this->gridSizeX),
-                    static_cast<int>(this->mousePosView.y) / static_cast<int>(this->gridSizeY)
+                    static_cast<int>(mousePosView.x) / static_cast<int>(this->gridSizeX),
+                    static_cast<int>(mousePosView.y) / static_cast<int>(this->gridSizeY)
             );
 
 }
 
 void Node_map::renderMouse(sf::RenderTarget* target)
 {
-    mouse_text.setPosition(this->mousePosView.x, this->mousePosView.y - 10);
+    mouse_text.setPosition(mousePosView.x, mousePosView.y - 10);
     std::stringstream ss;
-    ss << this->mousePosGrid.x << " " << this->mousePosGrid.y;
+    ss << mousePosGrid.x << " " << mousePosGrid.y;
     mouse_text.setString(ss.str());
     mouse_text.setFillColor(sf::Color::Red);
     target->draw(mouse_text);
@@ -184,29 +183,30 @@ double Node_map::heuristic(sf::Vector2i a, sf::Vector2i b) {
 }
 
 template<typename Location, typename Graph>
-void Node_map::aStar_tile(Graph graph,const Location start, const Location goal)
+void Node_map::aStar_tile
+        (Graph* graph,
+         Location start,
+         Location goal,
+         std::unordered_map<Location, Location>& came_from,
+         std::unordered_map<Location, double>& cost_so_far)
 {
-    PriorityQueue<Location,double> frontier;
+    PriorityQueue<Location, double> frontier;
     frontier.put(start, 0);
 
     came_from[start] = start;
     cost_so_far[start] = 0;
 
-    while (!frontier.empty())
-    {
+    while (!frontier.empty()) {
         Location current = frontier.get();
 
-        if (current == goal)
-        {
+        if (current == goal) {
             break;
         }
 
-        for (Location next : graph->neighbors(current))
-        {
+        for (Location next : graph->neighbors(current)) {
             double new_cost = cost_so_far[current] + graph->cost(current, next);
             if (cost_so_far.find(next) == cost_so_far.end()
-                || new_cost < cost_so_far[next])
-            {
+                || new_cost < cost_so_far[next]) {
                 cost_so_far[next] = new_cost;
                 double priority = new_cost + heuristic(next, goal);
                 frontier.put(next, priority);
@@ -216,12 +216,9 @@ void Node_map::aStar_tile(Graph graph,const Location start, const Location goal)
     }
 }
 
-void Node_map::func()
+void Node_map::call_astar(sf::Vector2i start, sf::Vector2i goal)
 {
-    const sf::Vector2i start(8,44);
-    const sf::Vector2i end(25,41);
-
-    aStar_tile(grid, start , end);
+    aStar_tile(grid, start , goal, this->came_from, this->cost_so_far);
 
     std::cout << "==============================================================================="
                  "\n\n\nCAME_FROM: \n\n\n ================================"
