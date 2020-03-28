@@ -61,7 +61,8 @@ bool Node_map::checkIntersect(Tile* _tile)
 
 void Node_map::addTile()
 {
-    Tile* _tile = new Tile(static_cast<float>(mousePosGrid.x) * gridSizeX, static_cast<float>(mousePosGrid.y) * gridSizeY, gridSizeX, gridSizeY);
+//    Tile* _tile = new Tile(static_cast<float>(mousePosGrid.x) * gridSizeX, static_cast<float>(mousePosGrid.y) * gridSizeY, gridSizeX, gridSizeY);
+    Tile* _tile = new Tile(sf::Vector2i(static_cast<float>(mousePosGrid.x) * gridSizeX, static_cast<float>(mousePosGrid.y) * gridSizeY));//, gridSizeX, gridSizeY);
 
     if (!checkIntersect(_tile))
         tiles.push_back(_tile);
@@ -71,7 +72,6 @@ Node_map::~Node_map()
 {
     for(auto itr : tiles)
         delete itr;
-
     delete grid;
 }
 
@@ -185,7 +185,7 @@ double Node_map::heuristic(sf::Vector2i a, sf::Vector2i b) {
     return std::abs(a.x - b.x) + std::abs(a.y - b.y);
 }
 
-void Node_map::aStar_tile
+std::vector<sf::Vector2i> Node_map::aStar_tile
         (GridWithWeights* graph,
          sf::Vector2i start,
          sf::Vector2i goal)
@@ -196,50 +196,52 @@ void Node_map::aStar_tile
     came_from[start] = start;
     cost_so_far[start] = 0;
 
-    while (!frontier.empty()) {
+    std::vector<sf::Vector2i> end;
+
+    while (!frontier.empty())
+    {
         sf::Vector2i current = frontier.get();
 
-        if (current == goal) {
+        if (current == goal)
+        {
             break;
         }
 
-        for (sf::Vector2i next : graph->neighbors(current)) {
+        for (sf::Vector2i next : tiles_graph[current])
+        {
             double new_cost = cost_so_far[current] + graph->cost(current, next);
-            if (cost_so_far.find(next) == cost_so_far.end()
-                || new_cost < cost_so_far[next]) {
+            if (cost_so_far.find(next) == cost_so_far.end() || new_cost < cost_so_far[next])
+            {
                 cost_so_far[next] = new_cost;
                 double priority = new_cost + heuristic(next, goal);
                 frontier.put(next, priority);
                 came_from[next] = current;
             }
         }
+
+        end.push_back(frontier.get());
     }
+    return end;
 }
 
 void Node_map::call_astar()
 {
-    aStar_tile(grid, *start , *goal);
+    std::vector<sf::Vector2i> print_;
+    print_ = aStar_tile(grid, *start , *goal);
 
-    std::cout << "==============================================================================="
-                 "\n\n\nCAME_FROM: \n\n\n ================================"
-                 "===============================================\n";
-    for(const auto& itr : came_from)
+    std::cout << "\n==============================================================================="
+                 "\n\n\nCAME_FROM:\n\n\n"
+                 " ===============================================================================\n";
+    /*for(const auto& itr : cost_so_far)
         std::cout << itr.first.x << "<->" << itr.first.y << std::endl;
 
     std::cout << "Elements of CAME FROM " << came_from.size() << std::endl;
-
-    for(auto itr : came_from)
+*/
+    for(auto itr : print_)
     {
-        Tile *tile_to_change = get_tile(itr.second);
+        Tile *tile_to_change = get_tile(itr);
         tile_to_change->setColor(sf::Color::Red);
     }
-    /*
-    for(const auto &itr : grid_in_map)
-        std::cout << itr.x << "<->" << itr.y << std::endl;
-
-    for(const auto &itr : all_grid)
-        std::cout << itr.x << "<->" << itr.y << std::endl;
-*/
 }
 
 void Node_map::setStart()
@@ -255,11 +257,11 @@ void Node_map::setGoal()
 {
     if(start != nullptr && goal == nullptr)
     {
-        auto *temp = new sf::Vector2i(static_cast<float>(mousePosGrid.x),
-                                      static_cast<float>(mousePosGrid.y));
-        if (temp != start)
+        auto *temp1 = new sf::Vector2i(static_cast<float>(mousePosGrid.x),
+                                       static_cast<float>(mousePosGrid.y));
+        if (temp1 != start)
         {
-            goal = temp;
+            goal = temp1;
 
             std::cout <<  "GOAL " << goal->x << " |-| " << goal->y << std::endl;
 
@@ -273,10 +275,12 @@ void Node_map::setGoal()
 
 Tile *Node_map::get_tile(sf::Vector2i in)
 {
-    Tile *temp = new Tile(in);
+    Tile *temp2 = new Tile(in);
 
     for(const auto itr : tiles)
-        if(*temp == itr)
+        if(*temp2 == itr)
             return itr;
+    delete temp2;
+    return nullptr;
 }
 
