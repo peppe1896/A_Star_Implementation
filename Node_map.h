@@ -42,18 +42,18 @@ static std::vector<sf::Vector2i> neighbors(sf::Vector2i id)  {
     return results;
 }
 
-typedef std::pair<sf::Vector2i, double> PQElement;
+typedef std::pair<double, sf::Vector2i> PQElement;
 
 template<typename T>
-class mycomparison
+class PQComparisor
 {
 public:
-    mycomparison() = default;
+    PQComparisor() = default;
     bool operator()(const PQElement & a, const PQElement &b)
     {
-        std::cout << "Compare \n " << a.second << "<-compare->" << b.second;
+        std::cout << "Compare \n " << a.first << "<-compare->" << b.first;
         //return std::tie(a.second.x,a.second.y) < std::tie(b.second.x, b.second.y);
-        return a.second < b.second;
+        return a.first < b.first;
     }
 
 };
@@ -62,7 +62,7 @@ template<typename T, typename priority_t>
 struct PriorityQueue {
     typedef std::pair<priority_t, T> PQElement;
     std::priority_queue<PQElement, std::vector<PQElement>,
-            std::greater<PQElement>> elements;
+            PQComparisor<PQElement>> elements;
 
     inline bool empty() const {
         return elements.empty();
@@ -79,36 +79,30 @@ struct PriorityQueue {
     }
 };
 
-static double cost(sf::Vector2i from_node, sf::Vector2i to_node) {
-    if(grid_out_map.find(to_node) == grid_out_map.end())
-        return 1;
-    return 10000;
-}
-
 struct SquareGrid {
     int width, height;
     std::array<sf::Vector2i, 4> DIRS = {sf::Vector2i(1, 0), sf::Vector2i(0, -1), sf::Vector2i(-1, 0), sf::Vector2i(0, 1)};
     SquareGrid(int width_, int height_)
             : width(width_), height(height_) {}
-
+/*
     std::vector<sf::Vector2i> neighbors(sf::Vector2i id) const {
         std::vector<sf::Vector2i> results;
 
-        for (sf::Vector2i dir : DIRS) {
+        for (sf::Vector2i dir : DIRS)
+        {
             sf::Vector2i next{id.x + dir.x, id.y + dir.y};
             results.push_back(next);
-            }
+        }
 
 
-        if ((id.x + id.y) % 2 == 0) {
+        if ((id.x + id.y) % 2 == 0)
+        {
             // aesthetic improvement on square grids
             std::reverse(results.begin(), results.end());
         }
 
         return results;
-        }
-};
-/*
+  */
     std::vector<sf::Vector2i> neighbors(sf::Vector2i id) const {
         std::vector<sf::Vector2i> results;
 
@@ -124,7 +118,9 @@ struct SquareGrid {
         }
 
         return results;
-        */
+        }
+
+};
 
 struct GridWithWeights: SquareGrid {
 
@@ -166,6 +162,11 @@ private:
     std::unordered_map<sf::Vector2i, double> cost_so_far;
     GridWithWeights* grid;
 
+    sf::Vector2i* start;
+    sf::Vector2i* goal;
+
+    Tile* get_tile(sf::Vector2i in);
+
 public:
     friend class Tile;
 
@@ -182,18 +183,17 @@ private:
     //A star functions
     double heuristic(sf::Vector2i a, sf::Vector2i b);
 public:
-    template<typename Location, typename Graph>
-    void aStar_tile(Graph* graph,
-                    Location start,
-                    Location goal,
-                    std::unordered_map<Location, Location>& came_from,
-                    std::unordered_map<Location, double>& cost_so_far);
+    void aStar_tile(GridWithWeights* graph,
+                    sf::Vector2i start,
+                    sf::Vector2i goal);
 
     //Draw & update functions
     void update();
     void renderMap(sf::RenderTarget* target);
     void renderMouse(sf::RenderTarget* target);
 
-    void call_astar(sf::Vector2i start, sf::Vector2i goal);
+    void setStart();
+    void setGoal();
+    void call_astar();
 };
 #endif //LABPROGRAMMAZIONE_NODE_MAP_H

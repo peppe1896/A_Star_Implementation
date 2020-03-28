@@ -24,6 +24,9 @@ Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY)
     loadTree("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Mappa.txt");
 
     grid = new GridWithWeights(117,63);
+
+    start = nullptr;
+    goal = nullptr;
 }
 
 void Node_map::update()
@@ -182,28 +185,25 @@ double Node_map::heuristic(sf::Vector2i a, sf::Vector2i b) {
     return std::abs(a.x - b.x) + std::abs(a.y - b.y);
 }
 
-template<typename Location, typename Graph>
 void Node_map::aStar_tile
-        (Graph* graph,
-         Location start,
-         Location goal,
-         std::unordered_map<Location, Location>& came_from,
-         std::unordered_map<Location, double>& cost_so_far)
+        (GridWithWeights* graph,
+         sf::Vector2i start,
+         sf::Vector2i goal)
 {
-    PriorityQueue<Location, double> frontier;
+    PriorityQueue<sf::Vector2i, double> frontier;
     frontier.put(start, 0);
 
     came_from[start] = start;
     cost_so_far[start] = 0;
 
     while (!frontier.empty()) {
-        Location current = frontier.get();
+        sf::Vector2i current = frontier.get();
 
         if (current == goal) {
             break;
         }
 
-        for (Location next : graph->neighbors(current)) {
+        for (sf::Vector2i next : graph->neighbors(current)) {
             double new_cost = cost_so_far[current] + graph->cost(current, next);
             if (cost_so_far.find(next) == cost_so_far.end()
                 || new_cost < cost_so_far[next]) {
@@ -216,23 +216,67 @@ void Node_map::aStar_tile
     }
 }
 
-void Node_map::call_astar(sf::Vector2i start, sf::Vector2i goal)
+void Node_map::call_astar()
 {
-    aStar_tile(grid, start , goal, this->came_from, this->cost_so_far);
+    aStar_tile(grid, *start , *goal);
 
     std::cout << "==============================================================================="
                  "\n\n\nCAME_FROM: \n\n\n ================================"
                  "===============================================\n";
-    for(const auto& itr : cost_so_far)
+    for(const auto& itr : came_from)
         std::cout << itr.first.x << "<->" << itr.first.y << std::endl;
 
     std::cout << "Elements of CAME FROM " << came_from.size() << std::endl;
-/*
+
+    for(auto itr : came_from)
+    {
+        Tile *tile_to_change = get_tile(itr.second);
+        tile_to_change->setColor(sf::Color::Red);
+    }
+    /*
     for(const auto &itr : grid_in_map)
         std::cout << itr.x << "<->" << itr.y << std::endl;
 
     for(const auto &itr : all_grid)
         std::cout << itr.x << "<->" << itr.y << std::endl;
 */
+}
+
+void Node_map::setStart()
+{
+    if(start == nullptr)
+        start = new sf::Vector2i(static_cast<float>(mousePosGrid.x),
+                                 static_cast<float>(mousePosGrid.y));
+    if(start != nullptr)
+        std::cout <<  "START " << start->x << " |-| " << start->y << std::endl;
+}
+
+void Node_map::setGoal()
+{
+    if(start != nullptr && goal == nullptr)
+    {
+        auto *temp = new sf::Vector2i(static_cast<float>(mousePosGrid.x),
+                                      static_cast<float>(mousePosGrid.y));
+        if (temp != start)
+        {
+            goal = temp;
+
+            std::cout <<  "GOAL " << goal->x << " |-| " << goal->y << std::endl;
+
+            call_astar();
+
+            start = nullptr;
+            goal = nullptr;
+        }
+    }
+}
+
+Tile *Node_map::get_tile(sf::Vector2i in)
+{
+    Tile *temp = new Tile(in);
+
+    for(const auto itr : tiles)
+        if(*temp == itr)
+            return itr;
 }
 

@@ -29,9 +29,6 @@ private:
     float gridSize_x;
     float gridSize_y;
 
-    sf::Vector2i* goal;
-    sf::Vector2i* start;
-
 public:
     Game();
     ~Game();

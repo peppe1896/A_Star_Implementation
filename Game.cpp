@@ -25,9 +25,6 @@ Game::Game()
 
     //Graph
     mappa = new Node_map(window, gridSize_x, gridSize_y);
-
-    start = nullptr;
-    goal = nullptr;
 }
 
 Game::~Game() {}
@@ -48,29 +45,13 @@ void Game::update() {
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
     {
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left) )
         {
-            if (start == nullptr)
-            {
-                start = new sf::Vector2i(static_cast<float>(mousePosGrid.x) * gridSize_x,
-                                         static_cast<float>(mousePosGrid.y) * gridSize_y);
-            }
+            mappa->setStart();
         }
-
         if(sf::Mouse::isButtonPressed(sf::Mouse::Right) && !sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
-            if(start != nullptr && goal == nullptr) {
-                auto *temp = new sf::Vector2i(static_cast<float>(mousePosGrid.x) * gridSize_x,
-                                              static_cast<float>(mousePosGrid.y) * gridSize_y);
-                if (temp != start) {
-                    goal = temp;
-
-                    mappa->call_astar(*start, *goal);
-
-                    start = nullptr;
-                    goal = nullptr;
-                }
-            }
+            mappa->setGoal();
         }
     }
 
