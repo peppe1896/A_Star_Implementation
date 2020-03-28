@@ -51,9 +51,10 @@ public:
     PQComparisor() = default;
     bool operator()(const PQElement & a, const PQElement &b)
     {
+        //IL PROBLEMA È IN QUESTO COMPARATORE.
         //std::cout << "\n " << a.first << "<-compare->" << b.first;
-        //return std::tie(a.second.x,a.second.y) < std::tie(b.second.x, b.second.y);
-        return a.first < b.first;
+        return std::tie(a.second.x,a.second.y) < std::tie(b.second.x, b.second.y) && (a.first < b.first);
+        //return a.first < b.first;
     }
 
 };
@@ -200,5 +201,6 @@ public:
     void setGoal();
 private:
     void call_astar();
+    void reset_tile();
 };
 #endif //LABPROGRAMMAZIONE_NODE_MAP_H

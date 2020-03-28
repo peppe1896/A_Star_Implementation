@@ -207,7 +207,7 @@ std::vector<sf::Vector2i> Node_map::aStar_tile
             break;
         }
 
-        for (sf::Vector2i next : tiles_graph[current])
+        for (sf::Vector2i next : get_neighbor(current))
         {
             double new_cost = cost_so_far[current] + graph->cost(current, next);
             if (cost_so_far.find(next) == cost_so_far.end() || new_cost < cost_so_far[next])
@@ -226,6 +226,7 @@ std::vector<sf::Vector2i> Node_map::aStar_tile
 
 void Node_map::call_astar()
 {
+    reset_tile();
     std::vector<sf::Vector2i> print_;
     print_ = aStar_tile(grid, *start , *goal);
 
@@ -237,7 +238,7 @@ void Node_map::call_astar()
 
     std::cout << "Elements of CAME FROM " << came_from.size() << std::endl;
 */
-    for(auto itr : print_)
+    for(auto& itr : print_)
     {
         Tile *tile_to_change = get_tile(itr);
         tile_to_change->setColor(sf::Color::Red);
@@ -281,6 +282,13 @@ Tile *Node_map::get_tile(sf::Vector2i in)
         if(*temp2 == itr)
             return itr;
     delete temp2;
+
     return nullptr;
+}
+
+void Node_map::reset_tile()
+{
+    for(auto itr : tiles)
+        itr->setColor(sf::Color::Blue);
 }
 
