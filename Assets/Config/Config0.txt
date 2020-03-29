@@ -1,0 +1,1 @@
+/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Mappe/Mappa0.txt /home/giuseppe/Progetti/Lab_Progr_2/Assets/Background/back0.png 1.0 -1.0 0.6757 0.364967

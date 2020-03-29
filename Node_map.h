@@ -81,6 +81,8 @@ private:
     sf::Font mouse_font;
     sf::Text mouse_text;
 
+    std::string locationMappa;
+
     //Definition of grid and vector of all tile dynamically updated
     float gridSizeX;
     float gridSizeY;
@@ -102,15 +104,15 @@ private:
 public:
     friend class Tile;
 
-    Node_map(sf::RenderWindow* window,  float gridX, float gridY);
+    Node_map(sf::RenderWindow* window,  float gridX, float gridY, std::string& location_mappa);
     ~Node_map();
 
     //Map functions
     void addTile();
-    void saveTree(const std::string& filename);
+    void saveTree();
 private:
     void create_static_data();
-    void loadTree(std::string filename);
+    bool loadTree();
 
     //A star functions
     double heuristic(sf::Vector2i a, sf::Vector2i b);

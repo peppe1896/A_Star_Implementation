@@ -6,7 +6,7 @@
 #include <fstream>
 #include "Node_map.h"
 
-Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY)
+Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY, std::string& location_mappa)
 {
     //mouse text & font
     if (!mouse_font.loadFromFile("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Fonts/mouse_font.ttf"))
@@ -21,7 +21,10 @@ Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY)
     gridSizeX = gridX;
     gridSizeY = gridY;
 
-    loadTree("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Mappa.txt");
+    locationMappa = location_mappa;
+
+    if(!loadTree())
+        std::cerr << "Mappa Non caricata!\nControlla i nomi dei file!\n";
 
     start = nullptr;
     goal = nullptr;
@@ -40,18 +43,20 @@ void Node_map::update()
 
 void Node_map::renderMouse(sf::RenderTarget* target)
 {
-    mouse_text.setPosition(mousePosView.x - 10, mousePosView.y - 10);
+    mouse_text.setPosition(mousePosView.x - 30, mousePosView.y - 10);
     std::stringstream ss;
     ss << mousePosGrid.x << " " << mousePosGrid.y;
     mouse_text.setString(ss.str());
     mouse_text.setFillColor(sf::Color::Red);
     target->draw(mouse_text);
+
+
 }
 
 bool Node_map::checkIntersect(Tile* _tile)
 {
     for(auto itr : tiles)
-            if(itr->getPosition() == _tile->getPosition())
+            if(*itr == _tile)
                 return true;
     return false;
 
@@ -59,47 +64,56 @@ bool Node_map::checkIntersect(Tile* _tile)
 
 void Node_map::addTile()
 {
-//    Tile* _tile = new Tile(static_cast<float>(mousePosGrid.x) * gridSizeX, static_cast<float>(mousePosGrid.y) * gridSizeY, gridSizeX, gridSizeY);
-    Tile* _tile = new Tile(sf::Vector2i(static_cast<float>(mousePosGrid.x) * gridSizeX, static_cast<float>(mousePosGrid.y) * gridSizeY));//, gridSizeX, gridSizeY);
+    Tile* _tile = new Tile(static_cast<float>(mousePosGrid.x) * gridSizeX, static_cast<float>(mousePosGrid.y) * gridSizeY, gridSizeX, gridSizeY);
 
     if (!checkIntersect(_tile))
+    {
         tiles.push_back(_tile);
+        std::cout << "TILE ADDED!\n";
+    } else
+        std::cout << "Gia presente\n";
 }
 
 Node_map::~Node_map()
 {
     for(auto itr : tiles)
         delete itr;
+
+    tiles_graph.clear();
+    grid_in_map.clear();
+    grid_out_map.clear();
+    all_grid.clear();
+
 }
 
 void Node_map::renderMap(sf::RenderTarget *target)
 {
     for(auto itr : tiles)
-        if(itr->color != "blue")
-            target->draw(itr->shape);
+    {
+        target->draw(itr->shape);
+    }
 }
 
-void Node_map::saveTree(const std::string& filename)
+void Node_map::saveTree()
 {
     std::ofstream out_file;
 
-    out_file.open(filename);
+    out_file.open(locationMappa);
     int numtiles = tiles.size();
     if(out_file.is_open())
     {
         out_file << numtiles << std::endl;
 
         for(auto itr : tiles)
-            out_file << itr->location.x << " " << itr->location.y  << " " << itr->weight << std::endl;
-            //out_file << itr->shape.getPosition().x/gridSizeX << " " << itr->shape.getPosition().y/gridSizeY  << " " << itr->weight << std::endl;
+            out_file << itr->shape.getPosition().x/gridSizeX << " " << itr->shape.getPosition().y/gridSizeY  << " " << itr->weight << std::endl;
     }
 }
 
-void Node_map::loadTree(const std::string filename)
+bool Node_map::loadTree()
 {
     std::ifstream in_file;
 
-    in_file.open(filename);
+    in_file.open(locationMappa);
 
     if(in_file.is_open())
     {
@@ -111,29 +125,27 @@ void Node_map::loadTree(const std::string filename)
         {
             float tempx;
             float tempy;
-            int weig = 0;
+            int weig;
             in_file >> tempx >> tempy >> weig;
             tiles.push_back(new Tile(tempx*gridSizeX,tempy*gridSizeY, gridSizeX,gridSizeY, weig));
         }
+        in_file.close();
+        create_static_data();
+        std::cout << "Size Graph (Num Elements): " << tiles_graph.size() << std::endl;
+        return true;
     }
-
-    //Creo l'unordered map da dare al grafo
-    create_static_data();
-
-    std::cout << "Size Graph (Num Elements): " << tiles_graph.size() << std::endl;
+    return false;
 }
 
 void Node_map::create_static_data() {
     //CREATING I SETS PER LE TILE DENTRO E FUORI DALLA MAPPA
 
-    //Creo il tiles_graph
     for (auto itr : tiles) {
         std::pair<sf::Vector2i, std::vector<sf::Vector2i>> pair(itr->location, get_neighbor(itr->location));
         tiles_graph.emplace(pair);
         grid_in_map.insert(itr->location);
     }
     std::cout << "NUMERO DI GRIDPOSITION DENTRO LA MAPPA " << grid_in_map.size() << std::endl;
-
     //Creo tutte le gridposition
     for (int i = 0; i < 117; i++) {
         for (int j = 0; j < 63; j++) {
@@ -269,7 +281,6 @@ Tile *Node_map::get_tile(sf::Vector2i in)
             return itr;
 
     delete temp2;
-
     return nullptr;
 }
 
@@ -277,8 +288,11 @@ void Node_map::reset_tile()
 {
     for(auto itr : tiles)
     {
-        itr->setColor(sf::Color::Blue);
-        itr->color = "blue";
+        if(itr->color == "red")
+        {
+            itr->setColor(sf::Color::Blue);
+            itr->color = "blue";
+        }
     }
 }
 
