@@ -6,7 +6,7 @@ int main()
     //          SELECT A NUMBER FROM 0 TO 2
     //                    |
     //                    V
-    Game* game = new Game(1);
+    Game* game = new Game(2);
     game->run();
 }
 

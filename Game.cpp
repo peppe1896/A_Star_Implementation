@@ -13,7 +13,7 @@ Game::Game(int config)
             configure_ = "/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Config1.txt";
             break;
         case 2:
-            configure_ = "__";
+            configure_ = "/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Config2.txt";
             break;
         default:
             configure_ = "";
