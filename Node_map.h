@@ -26,6 +26,7 @@ static std::unordered_set<sf::Vector2i> grid_in_map;
 static std::unordered_set<sf::Vector2i> grid_out_map;
 static std::unordered_set<sf::Vector2i> all_grid;
 
+static std::vector<sf::Vector2i> queue_player;
 
 template<typename T>
 class PQComparisor
@@ -127,6 +128,6 @@ private:
     void call_astar();
     void reset_tile();
 public:
-    std::vector<sf::Vector2i> reconstruct_path(sf::Vector2i start, sf::Vector2i goal);
+    std::vector<sf::Vector2i> reconstruct_path();
 };
 #endif //LABPROGRAMMAZIONE_NODE_MAP_H

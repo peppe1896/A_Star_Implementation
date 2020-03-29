@@ -40,7 +40,7 @@ void Node_map::update()
 
 void Node_map::renderMouse(sf::RenderTarget* target)
 {
-    mouse_text.setPosition(mousePosView.x, mousePosView.y - 10);
+    mouse_text.setPosition(mousePosView.x - 10, mousePosView.y - 10);
     std::stringstream ss;
     ss << mousePosGrid.x << " " << mousePosGrid.y;
     mouse_text.setString(ss.str());
@@ -220,10 +220,9 @@ void Node_map::aStar_tile
 
 void Node_map::call_astar()
 {
-
     aStar_tile(*start , *goal);
 
-    for(auto& itr : reconstruct_path(*start, *goal))
+    for(auto& itr : reconstruct_path())
     {
         Tile *tile_to_change = get_tile(itr);
         tile_to_change->setColor(sf::Color::Red);
@@ -283,24 +282,26 @@ void Node_map::reset_tile()
     }
 }
 
-std::vector<sf::Vector2i> Node_map::reconstruct_path(sf::Vector2i start, sf::Vector2i goal)
+std::vector<sf::Vector2i> Node_map::reconstruct_path()
 {
+    queue_player.clear();
     std::vector<sf::Vector2i> path;
-    sf::Vector2i current = goal;
+    sf::Vector2i current = *goal;
 
-    while (current != start)
+    while (current != *start)
     {
         path.push_back(current);
         current = came_from[current];
     }
 
-    path.push_back(start); // optional
+    path.push_back(*start); // optional
     std::reverse(path.begin(), path.end());
 
     this->start = nullptr;
     this->goal = nullptr;
 
     reset_tile();
+    queue_player = path;
 
     return path;
 }

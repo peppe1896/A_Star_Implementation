@@ -32,7 +32,7 @@ void player::initPlayer(float vel, float gridX, float gridY)
 
     player_sprite.setPosition(position);
 
-    setVelocity(vel*gridX);
+    setVelocity(vel);
 }
 
 void player::move(sf::Vector2f pos)
@@ -47,7 +47,8 @@ void player::drawPlayer(sf::RenderTarget* target)
 
 void player::handleInput()
 {
-    if(!sf::Mouse::isButtonPressed((sf::Mouse::Right))) {
+    if(!sf::Mouse::isButtonPressed((sf::Mouse::Right)))
+    {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
             position.y -= velocity;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
@@ -57,7 +58,27 @@ void player::handleInput()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
             position.x += velocity;
     }
+    std::vector<sf::Vector2i>::iterator itr;
+    if(!queue.empty())
+    {
+        sf::Vector2i temp4 = *itr;
+        if(position.x != temp4.x && position.y != temp4.y)
+        {
+            if (position.x / 11.f > temp4.x)
+                position.y -= velocity;
 
+            if (position.x / 11.f < temp4.x)
+                position.y += velocity;
+
+            if (position.y / 11.f > temp4.y)
+                position.x -= velocity;
+
+            if (position.y / 11.f < temp4.y)
+                position.x += velocity;
+
+        } else
+            itr ++;
+    }
     check_bound(); //aggiorna il vettore position se tocca l'esterno
 
     player_sprite.setPosition(position);
@@ -88,10 +109,34 @@ void player::setVelocity(float velocity)
 {
     this->velocity = velocity;
 }
-/*
-void player::put_in_grill()
+
+void player::setqueue(std::vector<sf::Vector2i> in)
 {
-
+    queue = in;
 }
-*/
 
+bool player::reach_tile(sf::Vector2f coord_tile)
+{
+    if(position.x != coord_tile.x && position.y != coord_tile.y)
+    {
+        if (position.x < coord_tile.x)
+            position.x += 1.f;
+
+        if (position.x > coord_tile.x)
+            position.x -= 1.f;
+
+        if (position.y < coord_tile.y)
+            position.x += 1.f;
+
+        if (position.y < coord_tile.y)
+            position.x += 1.f;
+        return true;
+    }
+
+    else
+        return true;
+}
+
+sf::Vector2f player::_2i_to_2f(sf::Vector2i change) {
+    return sf::Vector2f(static_cast<float>(change.x) * 11.f, static_cast<float>(change.y) * 11.f);
+}

@@ -7,6 +7,8 @@
 
 #include "entity.h"
 
+#include <queue>
+
 class player : public entity
 {
 private:
@@ -23,7 +25,11 @@ private:
 
     float velocity;
 
+    std::vector<sf::Vector2i> queue;
 
+    sf::Vector2f _2i_to_2f(sf::Vector2i change);
+
+    bool reach_tile(sf::Vector2f tile_to_reach);
 public:
 
     player(sf::RenderWindow* target, float vel, float gridX, float gridY);
@@ -38,6 +44,7 @@ public:
 
     void setVelocity(float velocity);
 
+    void setqueue(std::vector<sf::Vector2i> in);
 };
 
 

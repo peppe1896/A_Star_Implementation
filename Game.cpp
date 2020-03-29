@@ -13,7 +13,7 @@ Game::Game()
     gridSize_x = 11.f;
     gridSize_y = 11.f;/*SCALARE PER IMPOSTARE LA DIMENSIONE DELLA TILE E DEL PLAYER*/
 
-    hero = new player(window, 2.f, gridSize_x, gridSize_y);
+    hero = new player(window, 1.f, gridSize_x, gridSize_y);
 
     //set Background (map)
     if(!background_texture.loadFromFile("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Background/canvas.png"))
@@ -91,4 +91,3 @@ void Game::run()
         render(this->window);
     }
 }
-
