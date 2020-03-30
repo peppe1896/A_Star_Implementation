@@ -21,6 +21,7 @@ Game::Game(int config)
     }
     std::ifstream input;
     input.open(configure_);
+
     if(input.is_open())
     {
         std::cout << "LOADING CONFIGURATION from a Config file...\n";
@@ -67,6 +68,7 @@ Game::Game(int config)
     gridSize_y = 11.f;/*SCALARE PER IMPOSTARE LA DIMENSIONE DELLA TILE E DEL PLAYER*/
 
     hero = new player(window, 1.f, gridSize_x, gridSize_y);
+    control_player = new AutomaticControl();
 
     //set Background (map)
     background.setPosition(offsetx,offsety);
@@ -87,6 +89,8 @@ void Game::update() {
     }
 
     hero->handleInput();
+
+    control_player->updateAutoPosition();
 
     mappa->update();
 
@@ -141,3 +145,4 @@ void Game::run()
         render(this->window);
     }
 }
+

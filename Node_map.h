@@ -78,8 +78,10 @@ private:
     //Mouse info, to put tile
     sf::RenderWindow* window;
 
+    sf::RectangleShape start_goal_box;
     sf::Font mouse_font;
     sf::Text mouse_text;
+    sf::Text start_, goal_;
 
     std::string locationMappa;
 
@@ -131,5 +133,6 @@ private:
     void reset_tile();
 public:
     std::vector<sf::Vector2i> reconstruct_path();
+    bool take_that;
 };
 #endif //LABPROGRAMMAZIONE_NODE_MAP_H

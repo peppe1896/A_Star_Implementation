@@ -28,6 +28,26 @@ Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY, std::stri
 
     start = nullptr;
     goal = nullptr;
+
+    start_goal_box.setSize(sf::Vector2f(150.f, 60.f));
+    start_goal_box.setPosition(window->getSize().x - start_goal_box.getSize().x - 6.f, 6.f);
+    start_goal_box.setFillColor(sf::Color(0,0,0,180));
+    start_goal_box.setOutlineColor(sf::Color::Green);
+    start_goal_box.setOutlineThickness(2.f);
+
+    start_.setFont(mouse_font);
+    goal_.setFont(mouse_font);
+
+    start_.setPosition(sf::Vector2f(start_goal_box.getPosition().x + start_goal_box.getSize().x/2.f - 60.f
+            ,start_goal_box.getPosition().y + start_goal_box.getSize().y / 2.f - 20.f));
+
+    goal_.setPosition(sf::Vector2f(start_goal_box.getPosition().x + start_goal_box.getSize().x/2.f - 60.f
+            ,start_goal_box.getPosition().y + start_goal_box.getSize().y / 2.f));
+
+    start_.setCharacterSize(13);
+    goal_.setCharacterSize(13);
+    start_.setFillColor(sf::Color::Red);
+    goal_.setFillColor(sf::Color::Red);
 }
 
 void Node_map::update()
@@ -49,7 +69,6 @@ void Node_map::renderMouse(sf::RenderTarget* target)
     mouse_text.setString(ss.str());
     mouse_text.setFillColor(sf::Color::Red);
     target->draw(mouse_text);
-
 
 }
 
@@ -88,9 +107,27 @@ Node_map::~Node_map()
 
 void Node_map::renderMap(sf::RenderTarget *target)
 {
+    std::stringstream ss1;
+    std::stringstream ss2;
+
+    if(start != nullptr)
+    {
+        target->draw(start_goal_box);
+        ss1 << "START: " << start->x << "<->" << start->y;
+        start_.setString(ss1.str());
+        target->draw(start_);
+        if(goal != nullptr)
+        {
+            ss2 << "GOAL: " << goal->x << "<->" << goal->y;
+            goal_.setString(ss2.str());
+            target->draw(goal_);
+        }
+    }
+
     for(auto itr : tiles)
     {
-        target->draw(itr->shape);
+        if(itr->color != "blue")
+            target->draw(itr->shape);
     }
 }
 
@@ -244,32 +281,28 @@ void Node_map::call_astar()
 
 void Node_map::setStart()
 {
-    if(start == nullptr)
-        if(grid_in_map.find(mousePosGrid) != grid_in_map.end())
+    if(grid_in_map.find(mousePosGrid) != grid_in_map.end())
             start = new sf::Vector2i(static_cast<float>(mousePosGrid.x),
                                  static_cast<float>(mousePosGrid.y));
-
-    if(start != nullptr)
-        std::cout <<  "START " << start->x << " |-| " << start->y << std::endl;
+    else
+        start = nullptr;
 }
 
 void Node_map::setGoal()
 {
-    if(start != nullptr && goal == nullptr)
+    if (grid_in_map.find(mousePosGrid) != grid_in_map.end())
     {
-        if (grid_in_map.find(mousePosGrid) != grid_in_map.end())
-        {
-            auto *temp1 = new sf::Vector2i(static_cast<float>(mousePosGrid.x),
-                                           static_cast<float>(mousePosGrid.y));
-            if (temp1 != start) {
-                goal = temp1;
+        auto *temp1 = new sf::Vector2i(static_cast<float>(mousePosGrid.x),
+                                       static_cast<float>(mousePosGrid.y));
+        if (temp1 != start && start != nullptr) {
+            goal = temp1;
 
-                std::cout << "GOAL " << goal->x << " |-| " << goal->y << std::endl;
+            std::cout << "GOAL " << goal->x << " |-| " << goal->y << std::endl;
 
-                call_astar();
-            }
+            call_astar();
         }
-    }
+    } else
+        goal = nullptr;
 }
 
 Tile *Node_map::get_tile(sf::Vector2i in)
@@ -310,9 +343,6 @@ std::vector<sf::Vector2i> Node_map::reconstruct_path()
 
     path.push_back(*start); // optional
     std::reverse(path.begin(), path.end());
-
-    this->start = nullptr;
-    this->goal = nullptr;
 
     reset_tile();
     queue_player = path;

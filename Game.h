@@ -16,9 +16,6 @@ private:
     Node_map* mappa;
     std::string indirizzoMappa;
 
-    //Game Character
-    player* hero;
-
     //Background
     sf::RectangleShape background;
     sf::Texture background_texture;
@@ -27,6 +24,9 @@ private:
     float scalex , scaley;
     float offsetx, offsety;
     float gridSize_x, gridSize_y;
+
+    player* hero;
+    AutomaticControl* control_player;
 
 public:
     Game(int config = 64);
