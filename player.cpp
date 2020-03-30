@@ -5,7 +5,7 @@
 #include <iostream>
 #include "player.h"
 
-player::player(sf::RenderWindow* target, float vel, float gridX, float gridY, Node_map* map_to_pass)
+player::player(sf::RenderWindow* target, float vel, float gridX, float gridY, Node_map* map_to_pass, float auto_, float manual_)
 {
 
     windw = target;
@@ -33,6 +33,11 @@ player::player(sf::RenderWindow* target, float vel, float gridX, float gridY, No
     actual_goal = nullptr;
     go_to_next = false;
     attach();
+
+    auto_move_multipler = auto_;
+    manual_move_multipler = manual_;
+
+    autovelocity = velocity * auto_move_multipler;
 }
 
 player::~player()
@@ -55,13 +60,13 @@ void player::handleInput()
     if(!sf::Mouse::isButtonPressed((sf::Mouse::Right)))
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-            position->y -= velocity;
+            position->y -= velocity * manual_move_multipler;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-            position->y += velocity;
+            position->y += velocity * manual_move_multipler;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-            position->x -= velocity;
+            position->x -= velocity * manual_move_multipler;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-            position->x += velocity;
+            position->x += velocity * manual_move_multipler;
     }
 
     updateAutoPosition();
@@ -122,32 +127,62 @@ void player::move_player()
     {
         if (position->x == actual_goal->x && position->y == actual_goal->y)
         {
-            std::cout << "CHANGING OBJECT\n";
             actual_goal = nullptr;
             queue.erase(queue.begin());
             actual_goal = &queue.front();
         }
-        if (position->x < static_cast<float>(actual_goal->x))
-        {
-            std::cout << "MOVING PLAYER AUTOMATIC +X\n";
-            position->x += velocity;
-        }
-        if(position->x > static_cast<float>(actual_goal->x))
-        {
-            position->x -= velocity;
-            std::cout << "MOVING PLAYER AUTOMATIC -X\n";
 
-        }
-        if (position->y < static_cast<float>(actual_goal->y))
+        if(position->x <= static_cast<float>(actual_goal->x) + (5*auto_move_multipler) || position->x <= static_cast<float>(actual_goal->x) - (5*auto_move_multipler))
         {
-            std::cout << "MOVING PLAYER AUTOMATIC +Y\n";
-            position->y += velocity;
+            autovelocity = 1.f;
+            if (position->x < static_cast<float>(actual_goal->x))
+            {
+                position->x += (autovelocity);
+            }
+            if (position->x > static_cast<float>(actual_goal->x))
+            {
+                position->x -= (autovelocity);
+            }
         }
-        if(position->y > static_cast<float>(actual_goal->y))
+        else
         {
-            std::cout << "MOVING PLAYER AUTOMATIC -Y\n";
-            position->y -= velocity;
+            autovelocity = velocity * auto_move_multipler;
+
+            if (position->x < static_cast<float>(actual_goal->x))
+            {
+                position->x += (autovelocity);
+            }
+            if (position->x > static_cast<float>(actual_goal->x))
+            {
+                position->x -= (autovelocity);
+            }
         }
+        if(position->y <= static_cast<float>(actual_goal->y) + (5*auto_move_multipler) || position->y <= static_cast<float>(actual_goal->y) - (5*auto_move_multipler))
+        {
+            autovelocity = 1.f;
+            if (position->y < static_cast<float>(actual_goal->y))
+            {
+                position->y += (autovelocity);
+            }
+            if (position->y > static_cast<float>(actual_goal->y))
+            {
+                position->y -= (autovelocity);
+            }
+        }
+        else
+        {
+            autovelocity = velocity * auto_move_multipler;
+
+            if (position->y < static_cast<float>(actual_goal->y))
+            {
+                position->y += (autovelocity);
+            }
+            if (position->y > static_cast<float>(actual_goal->y))
+            {
+                position->y -= (autovelocity);
+            }
+        }
+
     }
 }
 

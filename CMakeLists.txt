@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project(LabProgrammazione)
 
 set(CMAKE_CXX_STANDARD 11)
-set(SOURCE_FILES main.cpp Game.cpp Game.h entity.h player.cpp player.h Node_map.h Node_map.cpp Graph.h Graph.cpp AutomaticControl.cpp AutomaticControl.h Subject.h Observer.h)
+set(SOURCE_FILES main.cpp Game.cpp Game.h entity.h player.cpp player.h Node_map.h Node_map.cpp Graph.h Graph.cpp Subject.h Observer.h)
 
 #NON è necessario impostare SFML_ROOT
 

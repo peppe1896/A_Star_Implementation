@@ -22,14 +22,18 @@ private:
     sf::RenderWindow* windw;
     sf::Vector2f window_size;
 
+    float auto_move_multipler;
+    float manual_move_multipler;
+
     float velocity;
+    float autovelocity;
     float gridSizeX;
     float gridSizeY;
 
     sf::Vector2f* position;
 
 public:
-    player(sf::RenderWindow* target, float vel, float gridX, float gridY, Node_map* map_to_pass);
+    player(sf::RenderWindow* target, float vel, float gridX, float gridY, Node_map* map_to_pass, float auto_multipler = 4.f, float manual_multipler = 5.f);
     virtual ~player();
 
     void drawPlayer(sf::RenderTarget* target);

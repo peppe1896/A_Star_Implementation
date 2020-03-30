@@ -107,30 +107,26 @@ Node_map::~Node_map()
 
 }
 
-void Node_map::renderMap(sf::RenderTarget *target)
-{
+void Node_map::renderMap(sf::RenderTarget *target) {
     std::stringstream ss1;
     std::stringstream ss2;
 
-    if(start != nullptr)
-    {
+    if (start != nullptr) {
         target->draw(start_goal_box);
         ss1 << "START: " << start->x << "<->" << start->y;
         start_.setString(ss1.str());
         target->draw(start_);
-        if(goal != nullptr)
-        {
+        if (goal != nullptr) {
             ss2 << "GOAL: " << goal->x << "<->" << goal->y;
             goal_.setString(ss2.str());
             target->draw(goal_);
         }
     }
-
-    for(auto itr : tiles)
-    {
-        if(itr->color != "blue")
+/*
+    for (auto itr : tiles)
+        if (itr->color != "blue")
             target->draw(itr->shape);
-    }
+*/
 }
 
 void Node_map::saveTree()
