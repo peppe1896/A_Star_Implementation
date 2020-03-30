@@ -5,8 +5,8 @@
 #ifndef LABPROGRAMMAZIONE_AUTOMATICCONTROL_H
 #define LABPROGRAMMAZIONE_AUTOMATICCONTROL_H
 
-#include "Game.h"
 
+/*
 class AutomaticControl
 {
 private:
@@ -14,14 +14,14 @@ private:
     sf::Vector2i* actual_goal;
     void move_player();
     bool go_to_next;
-    player* hero_;
 
+    sf::Vector2f* position;
     void change_tile();
 
 public:
-    AutomaticControl(player* player);
+    AutomaticControl(sf::Vector2f* position_hero);
     void updateAutoPosition();
 };
-
+*/
 
 #endif //LABPROGRAMMAZIONE_AUTOMATICCONTROL_H

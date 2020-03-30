@@ -3,7 +3,6 @@
 
 #include "player.h"
 #include "Node_map.h"
-
 class Game
 {
 private:
@@ -26,7 +25,6 @@ private:
     float gridSize_x, gridSize_y;
 
     player* hero;
-    AutomaticControl* control_player;
 
 public:
     Game(int config = 64);

@@ -48,6 +48,8 @@ Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY, std::stri
     goal_.setCharacterSize(13);
     start_.setFillColor(sf::Color::Red);
     goal_.setFillColor(sf::Color::Red);
+    queue_player.clear();
+    queue_is_changed = false;
 }
 
 void Node_map::update()
@@ -232,8 +234,7 @@ double Node_map::heuristic(sf::Vector2i a, sf::Vector2i b) {
     return std::abs(a.x - b.x) + std::abs(a.y - b.y);
 }
 
-void Node_map::aStar_tile
-            (sf::Vector2i start, sf::Vector2i goal)
+void Node_map::aStar_tile(sf::Vector2i start, sf::Vector2i goal)
 {
     PriorityQueue<sf::Vector2i, double> frontier;
     frontier.put(start, 0);
@@ -294,14 +295,16 @@ void Node_map::setGoal()
     {
         auto *temp1 = new sf::Vector2i(static_cast<float>(mousePosGrid.x),
                                        static_cast<float>(mousePosGrid.y));
-        if (temp1 != start && start != nullptr) {
+        if (temp1 != start && start != nullptr)
+        {
             goal = temp1;
 
             std::cout << "GOAL " << goal->x << " |-| " << goal->y << std::endl;
 
             call_astar();
         }
-    } else
+    }
+    else
         goal = nullptr;
 }
 
@@ -345,7 +348,26 @@ std::vector<sf::Vector2i> Node_map::reconstruct_path()
     std::reverse(path.begin(), path.end());
 
     reset_tile();
-    queue_player = path;
+    for(const auto& it : path)
+        queue_player.push_back(it);
+
+    notify();
 
     return path;
+}
+
+void Node_map::notify()
+{
+    for(auto itr : observers)
+        itr->update_observer();
+}
+
+void Node_map::addObserver(Observer *o)
+{
+    observers.push_back(o);
+}
+
+void Node_map::remObserver(Observer *o)
+{
+    observers.remove(o);
 }

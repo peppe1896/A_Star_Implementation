@@ -67,16 +67,15 @@ Game::Game(int config)
     gridSize_x = 11.f;
     gridSize_y = 11.f;/*SCALARE PER IMPOSTARE LA DIMENSIONE DELLA TILE E DEL PLAYER*/
 
-    hero = new player(window, 1.f, gridSize_x, gridSize_y);
-    control_player = new AutomaticControl();
+    //Graph & player
+    mappa = new Node_map(window, gridSize_x, gridSize_y, indirizzoMappa);
+    hero = new player(window, 1.f, gridSize_x, gridSize_y, mappa);
 
     //set Background (map)
     background.setPosition(offsetx,offsety);
     background.setSize(sf::Vector2f(static_cast<float>(background_texture.getSize().x),static_cast<float>(background_texture.getSize().y)));// vMode.height));
     background.setTexture(&background_texture);
     background.setScale(scalex,scaley); //Non adattabili! per una risoluzione di |1360x800|
-    //Graph
-    mappa = new Node_map(window, gridSize_x, gridSize_y, indirizzoMappa);
 }
 
 Game::~Game() {}
@@ -89,8 +88,6 @@ void Game::update() {
     }
 
     hero->handleInput();
-
-    control_player->updateAutoPosition();
 
     mappa->update();
 

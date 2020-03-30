@@ -7,6 +7,9 @@
 
 #include "Graph.h"
 #include <iostream>
+#include "Subject.h"
+#include <list>
+
 using namespace std;
 
 namespace std {
@@ -26,7 +29,6 @@ static std::unordered_set<sf::Vector2i> grid_in_map;
 static std::unordered_set<sf::Vector2i> grid_out_map;
 static std::unordered_set<sf::Vector2i> all_grid;
 
-static std::vector<sf::Vector2i> queue_player;
 
 template<typename T>
 class PQComparisor
@@ -72,7 +74,7 @@ struct PriorityQueue {
 static sf::Vector2f mousePosView;
 static sf::Vector2i mousePosGrid;
 
-class Node_map
+class Node_map : public Subject
 {
 private:
     //Mouse info, to put tile
@@ -102,9 +104,10 @@ private:
     sf::Vector2i* goal;
 
     Tile* get_tile(sf::Vector2i in);
+    std::list<Observer*> observers;
 
 public:
-    friend class Tile;
+
 
     Node_map(sf::RenderWindow* window,  float gridX, float gridY, std::string& location_mappa);
     ~Node_map();
@@ -112,6 +115,9 @@ public:
     //Map functions
     void addTile();
     void saveTree();
+
+    std::vector<sf::Vector2i> queue_player;
+    bool queue_is_changed;
 private:
     void create_static_data();
     bool loadTree();
@@ -133,6 +139,10 @@ private:
     void reset_tile();
 public:
     std::vector<sf::Vector2i> reconstruct_path();
-    bool take_that;
+
+    //Observer methods
+    void notify() override;
+    void addObserver(Observer* o) override;
+    void remObserver(Observer* o) override;
 };
 #endif //LABPROGRAMMAZIONE_NODE_MAP_H
