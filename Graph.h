@@ -5,38 +5,49 @@
 #ifndef LABPROGRAMMAZIONE_GRAPH_H
 #define LABPROGRAMMAZIONE_GRAPH_H
 
-class Tile;
+#include <iostream>
+#include <iomanip>
+#include <unordered_map>
+#include <unordered_set>
+#include <array>
+#include <vector>
+#include <utility>
+#include <queue>
+#include <tuple>
+#include <algorithm>
+#include <cstdlib>
 
-struct GridLocation
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
+
+
+struct GridLocation //preferisco usare sf::Vector2i
 {
-    int x;
-    int y;
+    int x, y;
 };
 
-struct TileGraph
-{
-    std::unordered_map<Tile*, std::vector<Tile*> > edges;
-
-    std::vector<Tile*> neighbors(Tile* id) {
-        return edges[id];
-    }
-};
+//======================================================================================================================
 
 class Tile
 {
 public:
-    Tile(float x, float y, float width, float heigth);
-    Tile(GridLocation in, float gridSize);
-    Tile(int x, int y, float gridSize);
+    Tile(float x, float y, float width, float heigth, int peso = 1);
+    Tile(sf::Vector2i in, float gridSize = 11.f, int peso = 1);
+    Tile(int x, int y, float gridSize = 11.f, int peso = 1);
     sf::Vector2f getPosition();
     sf::RectangleShape shape;
     sf::Texture tex;
-    GridLocation location{};
+    sf::Vector2i location{};
     std::string id;
+    std::string color;
 
-    void setColor(sf::Color colorchar);
+    int weight;
+    void setColor(sf::Color colortile);
 
     bool operator==(Tile* a);
     bool operator!=(Tile* a);
 };
+
 #endif //LABPROGRAMMAZIONE_GRAPH_H

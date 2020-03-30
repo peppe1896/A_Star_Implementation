@@ -3,33 +3,31 @@
 
 #include "player.h"
 #include "Node_map.h"
-
 class Game
 {
 private:
     //Frame
     sf::RenderWindow* window;
     sf::VideoMode vMode;
-    sf::Event event;
-    sf::RectangleShape __tile__;
+    sf::Event event{};
+
     //Mappa
     Node_map* mappa;
-
-    //Game Character
-    player* hero;
+    std::string indirizzoMappa;
 
     //Background
     sf::RectangleShape background;
     sf::Texture background_texture;
 
     //Di quanti pixel spostare la mappa verso dx e verso sud?
-    float offsetx;
-    float offsety;
-    float gridSize_x;
-    float gridSize_y;
+    float scalex , scaley;
+    float offsetx, offsety;
+    float gridSize_x, gridSize_y;
+
+    player* hero;
 
 public:
-    Game();
+    Game(int config = 64);
     ~Game();
 
     void update();

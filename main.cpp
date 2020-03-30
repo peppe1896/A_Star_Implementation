@@ -1,35 +1,12 @@
 #include "Game.h"
-/*
-void breadth_first_search(SimpleGraph graph, char start) {
-    std::queue<char> frontier;
-    frontier.push(start);
+enum CONFIGURATIONS{CONF0 = 0, CONF1, CONF2 };
 
-    std::unordered_set<char> visited;
-    visited.insert(start);
-
-    while (!frontier.empty()) {
-        char current = frontier.front();
-        frontier.pop();
-
-        std::cout << "Visiting " << current << '\n';
-        for (char next : graph.neighbors(current)) {
-            if (visited.find(next) == visited.end()) {
-                frontier.push(next);
-                visited.insert(next);
-                //std::cout << "BOH" << std::endl;
-            }
-        }
-    }
-}
-
-*/
-int main() {
-  //  breadth_first_search(example_graph, 'A');
-
-    Game* game = new Game();
-
+int main()
+{
+    //          SELECT A NUMBER FROM 0 TO 2
+    //                    |
+    //                    V
+    Game* game = new Game(2);
     game->run();
-
-    //a_star_search(example_graph, 'A', 'E');
 }
 

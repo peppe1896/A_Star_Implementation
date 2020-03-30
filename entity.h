@@ -12,9 +12,7 @@
 class entity
 {
 public:
-
     virtual void move(sf::Vector2f pos) = 0;
-
 };
 
 
