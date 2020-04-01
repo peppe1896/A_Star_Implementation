@@ -26,11 +26,12 @@ private:
     float manual_move_multipler;
 
     float velocity;
-    float autovelocity;
+    float autovelocity_x;
+    float autovelocity_y;
     float gridSizeX;
     float gridSizeY;
 
-    sf::Vector2f* position;
+    sf::Vector2f position;
 
 public:
     player(sf::RenderWindow* target, float vel, float gridX, float gridY, Node_map* map_to_pass, float auto_multipler = 4.f, float manual_multipler = 5.f);
@@ -38,6 +39,7 @@ public:
 
     void drawPlayer(sf::RenderTarget* target);
     void move(sf::Vector2f pos) override;
+    void move_(sf::Vector2f pos);
     void handleInput();
     void setVelocity(float velocity);
 
@@ -57,8 +59,8 @@ public:
     void update_observer() override;
 
     //For tests
-    sf::Vector2f getPosition() {return *position;}
-    void create_queue_test(std::vector<sf::Vector2i> mappa_queue);
+    sf::Vector2f getPosition() {return position;}
+    void create_queue_test(std::vector<sf::Vector2f> mappa_queue);
     std::vector<sf::Vector2f> getQueue() {return queue;}
 };
 
