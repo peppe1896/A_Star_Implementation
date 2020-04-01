@@ -35,9 +35,8 @@ This script invokes googletest-throw-on-failure-test_ (a program written with
 Google Test) with different environments and command line flags.
 """
 
-import os
 import gtest_test_utils
-
+import os
 
 # Constants.
 

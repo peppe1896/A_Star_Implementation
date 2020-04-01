@@ -31,10 +31,10 @@
 
 """Unit test for the gtest_xml_output module."""
 
-import os
-from xml.dom import minidom, Node
 import gtest_test_utils
 import gtest_xml_test_utils
+import os
+from xml.dom import minidom
 
 GTEST_OUTPUT_SUBDIR = "xml_outfiles"
 GTEST_OUTPUT_1_TEST = "gtest_xml_outfile1_test_"

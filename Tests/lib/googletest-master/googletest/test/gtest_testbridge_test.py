@@ -29,9 +29,8 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """Verifies that Google Test uses filter provided via testbridge."""
 
-import os
-
 import gtest_test_utils
+import os
 
 binary_name = 'gtest_testbridge_test_'
 COMMAND = gtest_test_utils.GetTestExecutablePath(binary_name)

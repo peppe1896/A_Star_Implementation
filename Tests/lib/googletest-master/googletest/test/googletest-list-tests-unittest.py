@@ -37,8 +37,8 @@ by invoking googletest-list-tests-unittest_ (a program written with
 Google Test) the command line flags.
 """
 
-import re
 import gtest_test_utils
+import re
 
 # Constants.
 

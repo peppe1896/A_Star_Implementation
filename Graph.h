@@ -39,7 +39,7 @@ public:
     sf::Vector2f getPosition();
     sf::RectangleShape shape;
     sf::Texture tex;
-    sf::Vector2i location{};
+    sf::Vector2i location;
     std::string id;
     std::string color;
 

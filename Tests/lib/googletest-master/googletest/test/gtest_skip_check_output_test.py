@@ -33,9 +33,8 @@ This script invokes gtest_skip_in_environment_setup_test_ and verifies its
 output.
 """
 
-import re
-
 import gtest_test_utils
+import re
 
 # Path to the gtest_skip_in_environment_setup_test binary
 EXE_PATH = gtest_test_utils.GetTestExecutablePath('gtest_skip_test')

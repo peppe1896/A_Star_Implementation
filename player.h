@@ -47,8 +47,6 @@ private:
     sf::Vector2f* actual_goal;
 
     void move_player();
-    bool go_to_next;
-    void change_tile();
     void create_queue();
 public:
     void updateAutoPosition();
@@ -57,6 +55,11 @@ public:
     void attach() override;
     void detach() override;
     void update_observer() override;
+
+    //For tests
+    sf::Vector2f getPosition() {return *position;}
+    void create_queue_test(std::vector<sf::Vector2i> mappa_queue);
+    std::vector<sf::Vector2f> getQueue() {return queue;}
 };
 
 
