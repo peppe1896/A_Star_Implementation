@@ -31,8 +31,8 @@
 
 """Verifies that Google Test correctly determines whether to use colors."""
 
-import os
 import gtest_test_utils
+import os
 
 IS_WINDOWS = os.name == 'nt'
 

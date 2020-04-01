@@ -5,7 +5,7 @@
 #include "Node_map.h"
 class Game
 {
-private:
+protected:
     //Frame
     sf::RenderWindow* window;
     sf::VideoMode vMode;
@@ -28,12 +28,16 @@ private:
 
 public:
     Game(int config = 64);
-    ~Game();
+    virtual ~Game();
 
     void update();
     void render(sf::RenderTarget* target);
 
     void run();
+
+    //Testing
+    Node_map* getMap() const;
+    player* getPlayer() const;
 };
 
 

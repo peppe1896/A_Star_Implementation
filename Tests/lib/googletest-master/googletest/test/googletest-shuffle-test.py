@@ -30,8 +30,8 @@
 
 """Verifies that test shuffling works."""
 
-import os
 import gtest_test_utils
+import os
 
 # Command to run the googletest-shuffle-test_ program.
 COMMAND = gtest_test_utils.GetTestExecutablePath('googletest-shuffle-test_')

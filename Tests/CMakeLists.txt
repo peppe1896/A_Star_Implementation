@@ -1,15 +1,10 @@
+cmake_minimum_required(VERSION 3.15)
 project(gootest)
-
 add_subdirectory(lib/googletest-master)
+include_directories(lib/googletest-master/googlemock/include)
+include_directories(lib/googletest-master/googletest/include)
+find_package(SFML 2.5 COMPONENTS graphics audio system audio network REQUIRED)
 
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
-
-set(SOURCE_FILES Test1.h)
-
-#core è la libreria definita nel CMakeList del progetto
-add_library(googleTest ${SOURCE_FILES})
-
-add_executable(gootest Test1.h)
-
-target_link_libraries(gootest ${GTEST_BOTH_LIBRARIES} core googleTest)
+set(SOURCE_T_FILES runAllTests.cpp Test_a_star_0.cpp auto_movement_test_0.cpp)
+add_executable(gootest runAllTests.cpp Test_a_star_0.cpp auto_movement_test_0.cpp test_observer.cpp)
+target_link_libraries(gootest gtest gtest_main core sfml-window sfml-graphics sfml-system sfml-audio sfml-network)

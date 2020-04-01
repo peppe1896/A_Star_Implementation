@@ -38,8 +38,8 @@ by invoking googletest-break-on-failure-unittest_ (a program written with
 Google Test) with different environments and command line flags.
 """
 
-import os
 import gtest_test_utils
+import os
 
 # Constants.
 

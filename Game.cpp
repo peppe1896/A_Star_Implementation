@@ -24,7 +24,7 @@ Game::Game(int config)
 
     if(input.is_open())
     {
-        std::cout << "LOADING CONFIGURATION from a Config file...\n";
+        //std::cout << "GAME::LOADING CONFIGURATION from a Config file...\n";
         float off_x, off_y, scale_x, scale_y;
         std::string map;
         std::string background;
@@ -45,7 +45,7 @@ Game::Game(int config)
     }
     else
     {
-        std::cout << "LOADING DEFAULT CONFIG\n";
+        std::cout << "~~GAME::LOADING DEFAULT CONFIG~~\n";
         offsetx = 1.f;
         offsety = -1.f;
 
@@ -78,7 +78,9 @@ Game::Game(int config)
     background.setScale(scalex,scaley); //Non adattabili! per una risoluzione di |1360x800|
 }
 
-Game::~Game() {}
+Game::~Game()
+{
+}
 
 void Game::update() {
     while (window->pollEvent(event))
@@ -100,7 +102,7 @@ void Game::update() {
         {
             mappa->setStart();
         }
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Right) && !sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
             mappa->setGoal();
         }
@@ -129,7 +131,9 @@ void Game::render(sf::RenderTarget* target)
     hero->drawPlayer(target);
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+    {
         mappa->renderMouse(target);
+    }
 
     window->display();
 }
@@ -141,5 +145,13 @@ void Game::run()
         update();
         render(this->window);
     }
+}
+
+Node_map *Game::getMap() const {
+    return mappa;
+}
+
+player *Game::getPlayer() const {
+    return hero;
 }
 

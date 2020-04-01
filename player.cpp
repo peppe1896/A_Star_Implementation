@@ -31,7 +31,6 @@ player::player(sf::RenderWindow* target, float vel, float gridX, float gridY, No
     mappa = map_to_pass;
 
     actual_goal = nullptr;
-    go_to_next = false;
     attach();
 
     auto_move_multipler = auto_;
@@ -188,8 +187,6 @@ void player::move_player()
 
 void player::create_queue()
 {
-    queue.clear();
-
     for(auto itr : mappa->queue_player)
         queue.emplace_back(static_cast<float>(itr.x * gridSizeX), static_cast<float>(itr.y * gridSizeY));
 
@@ -207,7 +204,17 @@ void player::detach()
 
 void player::update_observer()
 {
+    queue.clear();
     create_queue();
+}
+
+void player::create_queue_test(std::vector<sf::Vector2i> mappa_queue)
+{
+    queue.clear();
+
+    for(auto itr : mappa_queue)
+        queue.emplace_back(static_cast<float>(itr.x * gridSizeX), static_cast<float>(itr.y * gridSizeY));
+
 }
 
 

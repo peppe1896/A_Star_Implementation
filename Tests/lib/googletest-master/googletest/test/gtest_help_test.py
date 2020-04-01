@@ -37,10 +37,9 @@ SYNOPSIS
        gtest_help_test.py
 """
 
+import gtest_test_utils
 import os
 import re
-import gtest_test_utils
-
 
 IS_LINUX = os.name == 'posix' and os.uname()[0] == 'Linux'
 IS_WINDOWS = os.name == 'nt'

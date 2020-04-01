@@ -81,6 +81,7 @@ private:
     sf::RenderWindow* window;
 
     sf::RectangleShape start_goal_box;
+    sf::RectangleShape mouse_pos_box;
     sf::Font mouse_font;
     sf::Text mouse_text;
     sf::Text start_, goal_;
@@ -107,8 +108,6 @@ private:
     std::list<Observer*> observers;
 
 public:
-
-
     Node_map(sf::RenderWindow* window,  float gridX, float gridY, std::string& location_mappa);
     ~Node_map();
 
@@ -117,7 +116,6 @@ public:
     void saveTree();
 
     std::vector<sf::Vector2i> queue_player;
-    bool queue_is_changed;
 private:
     void create_static_data();
     bool loadTree();
@@ -125,7 +123,7 @@ private:
     //A star functions
     double heuristic(sf::Vector2i a, sf::Vector2i b);
 public:
-    void aStar_tile(sf::Vector2i start, sf::Vector2i goal);
+    void aStar_tile();
 
     //Draw & update functions
     void update();
@@ -144,5 +142,10 @@ public:
     void notify() override;
     void addObserver(Observer* o) override;
     void remObserver(Observer* o) override;
+
+    //TESTING METHODS
+    void setStart_test(sf::Vector2i start_position = sf::Vector2i(61,7));
+    void setGoal_test(sf::Vector2i goal_position = sf::Vector2i(90,15));
+    std::list<Observer*> getObservers();
 };
 #endif //LABPROGRAMMAZIONE_NODE_MAP_H

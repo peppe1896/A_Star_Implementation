@@ -33,13 +33,12 @@
 
 import datetime
 import errno
+import gtest_test_utils
+import gtest_xml_test_utils
 import os
 import re
 import sys
-from xml.dom import minidom, Node
-
-import gtest_test_utils
-import gtest_xml_test_utils
+from xml.dom import minidom
 
 GTEST_FILTER_FLAG = '--gtest_filter'
 GTEST_LIST_TESTS_FLAG = '--gtest_list_tests'

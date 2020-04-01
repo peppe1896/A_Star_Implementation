@@ -63,12 +63,10 @@ EXAMPLE
 
 __author__ = 'wan@google.com (Zhanyong Wan)'
 
+import common
 import os
 import re
 import sys
-
-import common
-
 
 # Wiki pages that shouldn't be branched for every gtest/gmock release.
 GTEST_UNVERSIONED_WIKIS = ['DevGuide.wiki']
