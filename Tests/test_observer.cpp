@@ -9,11 +9,11 @@
 
 TEST(Observer, observer_attach) {
     Game *game = new Game(1);
-    Node_map *map = game->getMap();
+    nodeMap *map = game->getMap();
     map->setStart_test();
     map->setGoal_test();
-    map->aStar_tile();
-    map->reconstruct_path();
+    map->aStarTile();
+    map->reconstructPath();
     std::list<Observer *> obs_test = map->getObservers();
     int num_observer_previsti = 1;
 

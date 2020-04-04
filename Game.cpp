@@ -7,13 +7,13 @@ Game::Game(int config)
     switch (config)
     {
         case 0:
-            configure_ = "/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Config0.txt";
+            configure_ = "./Assets/Config/Config0.txt";
             break;
         case 1:
-            configure_ = "/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Config1.txt";
+            configure_ = "./Assets/Config/Config1.txt";
             break;
         case 2:
-            configure_ = "/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Config2.txt";
+            configure_ = "./Assets/Config/Config2.txt";
             break;
         default:
             configure_ = "";
@@ -31,31 +31,31 @@ Game::Game(int config)
 
         input >> map >> background >> off_x >> off_y >> scale_x >> scale_y;
 
-        offsetx = off_x;
-        offsety = off_y;
+        offsetX = off_x;
+        offsetY = off_y;
 
         if(!background_texture.loadFromFile(background))
             std::cerr << "ERROR::COULD NOT FIND THE MAP";
 
         indirizzoMappa = map;
 
-        scalex = scale_x;
-        scaley = scale_y;
+        scaleX = scale_x;
+        scaleY = scale_y;
         input.close();
     }
     else
     {
         std::cout << "~~GAME::LOADING DEFAULT CONFIG~~\n";
-        offsetx = 1.f;
-        offsety = -1.f;
+        offsetX = 1.f;
+        offsetY = -1.f;
 
-        if(!background_texture.loadFromFile("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Background/back0.png"))
+        if(!background_texture.loadFromFile("./Assets/Background/back0.png"))
             std::cerr << "ERROR::COULD NOT FIND THE MAP";
 
-        indirizzoMappa = "/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Mappe/Mappa0.txt";
+        indirizzoMappa = "./Assets/Config/Mappe/Mappa0.txt";
 
-        scalex = 0.6757;
-        scaley = 0.364967;
+        scaleX = 0.6757;
+        scaleY = 0.364967;
     }
 
     vMode.width = 1360;
@@ -64,18 +64,18 @@ Game::Game(int config)
     this->window->setFramerateLimit((60));
 
     //GridSize
-    gridSize_x = 11.f;
-    gridSize_y = 11.f;/*SCALARE PER IMPOSTARE LA DIMENSIONE DELLA TILE E DEL PLAYER*/
+    gridSizeX = 11.f;
+    gridSizeY = 11.f;/*SCALARE PER IMPOSTARE LA DIMENSIONE DELLA TILE E DEL PLAYER*/
 
     //Graph & player
-    mappa = new Node_map(window, gridSize_x, gridSize_y, indirizzoMappa);
-    hero = new player(window, 1.f, gridSize_x, gridSize_y, mappa);
+    mappa = new nodeMap(window, gridSizeX, gridSizeY, indirizzoMappa);
+    hero = new player(window, 1.f, gridSizeX, gridSizeY, mappa);
 
     //set Background (map)
-    background.setPosition(offsetx,offsety);
+    background.setPosition(offsetX, offsetY);
     background.setSize(sf::Vector2f(static_cast<float>(background_texture.getSize().x),static_cast<float>(background_texture.getSize().y)));// vMode.height));
     background.setTexture(&background_texture);
-    background.setScale(scalex,scaley); //Non adattabili! per una risoluzione di |1360x800|
+    background.setScale(scaleX, scaleY); //Non adattabili! per una risoluzione di |1360x800|
 }
 
 Game::~Game()
@@ -147,7 +147,7 @@ void Game::run()
     }
 }
 
-Node_map *Game::getMap() const {
+nodeMap *Game::getMap() const {
     return mappa;
 }
 

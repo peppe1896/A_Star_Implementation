@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
 project(gootest)
+#GOOGLE TEST
 add_subdirectory(lib/googletest-master)
 include_directories(lib/googletest-master/googlemock/include)
 include_directories(lib/googletest-master/googletest/include)
+#SFML
 find_package(SFML 2.5 COMPONENTS graphics audio system audio network REQUIRED)
 
 set(SOURCE_T_FILES runAllTests.cpp Test_a_star_0.cpp auto_movement_test_0.cpp)

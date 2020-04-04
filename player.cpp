@@ -5,25 +5,25 @@
 #include <iostream>
 #include "player.h"
 
-player::player(sf::RenderWindow* target, float vel, float gridX, float gridY, Node_map* map_to_pass, float auto_, float manual_)
+player::player(sf::RenderWindow* target, float vel, float gridX, float gridY, nodeMap* map_to_pass, float auto_, float manual_)
 {
 
-    windw = target;
-    window_size.x = static_cast<float>(windw->getSize().x);
-    window_size.y = static_cast<float>(windw->getSize().y);
+    windows = target;
+    windowSize.x = static_cast<float>(windows->getSize().x);
+    windowSize.y = static_cast<float>(windows->getSize().y);
     //Imposto vettore posizione
-    position.x = window_size.x / 2 + player_sprite.getSize().x / 2;
-    position.y = window_size.y / 2 + player_sprite.getSize().y / 2;
+    position.x = windowSize.x / 2 + playerSprite.getSize().x / 2;
+    position.y = windowSize.y / 2 + playerSprite.getSize().y / 2;
 
     //Disegno rectangle shape
     gridSizeX = gridX;
     gridSizeY = gridY;
-    player_sprite.setFillColor(sf::Color::Black);
-    player_sprite.setSize(sf::Vector2f(gridSizeX,gridSizeY));
-    player_sprite.setOutlineThickness(1.f);
-    player_sprite.setOutlineColor(sf::Color::Green);
+    playerSprite.setFillColor(sf::Color::Black);
+    playerSprite.setSize(sf::Vector2f(gridSizeX, gridSizeY));
+    playerSprite.setOutlineThickness(1.f);
+    playerSprite.setOutlineColor(sf::Color::Green);
 
-    player_sprite.setPosition(position);
+    playerSprite.setPosition(position);
 
     setVelocity(vel);
 
@@ -32,11 +32,11 @@ player::player(sf::RenderWindow* target, float vel, float gridX, float gridY, No
     actual_goal = nullptr;
     attach();
 
-    auto_move_multipler = auto_;
-    manual_move_multipler = manual_;
+    autoMoveMultipler = auto_;
+    manualMoveMultipler = manual_;
 
-    autovelocity_x = velocity * auto_move_multipler;
-    autovelocity_y = velocity * auto_move_multipler;
+    autoVelocityX = velocity * autoMoveMultipler;
+    autoVelocityY = velocity * autoMoveMultipler;
 }
 
 player::~player()
@@ -46,7 +46,7 @@ player::~player()
 
 void player::move(sf::Vector2f pos)
 {
-    player_sprite.setPosition(pos);
+    playerSprite.setPosition(pos);
 }
 
 void player::move_(sf::Vector2f pos)
@@ -56,7 +56,7 @@ void player::move_(sf::Vector2f pos)
 
 void player::drawPlayer(sf::RenderTarget* target)
 {
-    target->draw(player_sprite);
+    target->draw(playerSprite);
 }
 
 void player::handleInput()
@@ -64,32 +64,32 @@ void player::handleInput()
     if(!sf::Mouse::isButtonPressed((sf::Mouse::Right)))
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-            position.y -= velocity * manual_move_multipler;
+            position.y -= velocity * manualMoveMultipler;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-            position.y += velocity * manual_move_multipler;
+            position.y += velocity * manualMoveMultipler;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-            position.x -= velocity * manual_move_multipler;
+            position.x -= velocity * manualMoveMultipler;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-            position.x += velocity * manual_move_multipler;
+            position.x += velocity * manualMoveMultipler;
     }
 
     updateAutoPosition();
 
-    check_bound();
+    checkBound();
 
-    player_sprite.setPosition(position);
+    playerSprite.setPosition(position);
 }
 
-void player::check_bound()
+void player::checkBound()
 {
     //Ferma il player entro i confini della window
     //BLOCCA RIGHT
-    if (position.x >= window_size.x - player_sprite.getSize().x)
-        position.x = window_size.x - player_sprite.getSize().x;
+    if (position.x >= windowSize.x - playerSprite.getSize().x)
+        position.x = windowSize.x - playerSprite.getSize().x;
 
     //BLOCCA DOWN
-    if (position.y > window_size.y - player_sprite.getSize().y)
-        position.y = window_size.y - player_sprite.getSize().y;
+    if (position.y > windowSize.y - playerSprite.getSize().y)
+        position.y = windowSize.y - playerSprite.getSize().y;
 
     //BLOCCA LEFT
     if (position.x <= 0.f)
@@ -116,7 +116,7 @@ void player::updateAutoPosition()
             actual_goal = &queue.front();
             std::cout << "Actual goal = " << actual_goal->x << " " << actual_goal->y << std::endl;
         }
-        move_player();
+        movePlayer();
     }
     else
     {
@@ -125,7 +125,7 @@ void player::updateAutoPosition()
 
 }
 
-void player::move_player()
+void player::movePlayer()
 {
     if(actual_goal != nullptr)
     {
@@ -136,61 +136,61 @@ void player::move_player()
             actual_goal = &queue.front();
         }
 
-        if(position.x <= static_cast<float>(actual_goal->x) + (3*auto_move_multipler) || position.x <= static_cast<float>(actual_goal->x) - (3*auto_move_multipler))
+        if(position.x <= static_cast<float>(actual_goal->x) + (3 * autoMoveMultipler) || position.x <= static_cast<float>(actual_goal->x) - (3 * autoMoveMultipler))
         {
-            autovelocity_x = 1.f;
+            autoVelocityX = 1.f;
             if (position.x < static_cast<float>(actual_goal->x))
             {
-                position.x += (autovelocity_x);
+                position.x += (autoVelocityX);
             }
             if (position.x > static_cast<float>(actual_goal->x))
             {
-                position.x -= (autovelocity_x);
+                position.x -= (autoVelocityX);
             }
         }
         else
         {
-            autovelocity_x = velocity * auto_move_multipler;
+            autoVelocityX = velocity * autoMoveMultipler;
 
             if (position.x < static_cast<float>(actual_goal->x))
             {
-                position.x += (autovelocity_x);
+                position.x += (autoVelocityX);
             }
             if (position.x > static_cast<float>(actual_goal->x))
             {
-                position.x -= (autovelocity_x);
+                position.x -= (autoVelocityX);
             }
         }
-        if(position.y <= static_cast<float>(actual_goal->y) + (3*auto_move_multipler) || position.y <= static_cast<float>(actual_goal->y) - (3*auto_move_multipler))
+        if(position.y <= static_cast<float>(actual_goal->y) + (3 * autoMoveMultipler) || position.y <= static_cast<float>(actual_goal->y) - (3 * autoMoveMultipler))
         {
-            autovelocity_y = 1.f;
+            autoVelocityY = 1.f;
             if (position.y < static_cast<float>(actual_goal->y))
             {
-                position.y += (autovelocity_y);
+                position.y += (autoVelocityY);
             }
             if (position.y > static_cast<float>(actual_goal->y))
             {
-                position.y -= (autovelocity_y);
+                position.y -= (autoVelocityY);
             }
         }
         else
         {
-            autovelocity_y = velocity * auto_move_multipler;
+            autoVelocityY = velocity * autoMoveMultipler;
 
             if (position.y < static_cast<float>(actual_goal->y))
             {
-                position.y += (autovelocity_y);
+                position.y += (autoVelocityY);
             }
             if (position.y > static_cast<float>(actual_goal->y))
             {
-                position.y -= (autovelocity_y);
+                position.y -= (autoVelocityY);
             }
         }
 
     }
 }
 
-void player::create_queue()
+void player::createQueue()
 {
     for(auto itr : mappa->queue_player)
         queue.emplace_back(static_cast<float>(itr.x * gridSizeX), static_cast<float>(itr.y * gridSizeY));
@@ -210,7 +210,7 @@ void player::detach()
 void player::update_observer()
 {
     queue.clear();
-    create_queue();
+    createQueue();
 }
 
 void player::create_queue_test(std::vector<sf::Vector2f> mappa_queue)

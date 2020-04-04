@@ -1,1 +1,1 @@
-/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Mappe/Mappa2.txt /home/giuseppe/Progetti/Lab_Progr_2/Assets/Background/back2.png 1.0 1.0 0.4257 0.364967
+./Assets/Config/Mappe/Mappa2.txt ./Assets/Background/back2.png 1.0 1.0 0.4257 0.364967

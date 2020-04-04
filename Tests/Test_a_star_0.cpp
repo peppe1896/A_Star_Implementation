@@ -17,7 +17,7 @@ protected:
     }
 
     Game* test;
-    Node_map* mapp;
+    nodeMap* mapp;
     std::array<sf::Vector2i, 22> expec;
 
     //Array for pre-defined path
@@ -51,8 +51,8 @@ protected:
 
 TEST_F(node_map_test, Expected_path)
 {
-    mapp->aStar_tile();
-    std::vector<sf::Vector2i> path = mapp->reconstruct_path();
+    mapp->aStarTile();
+    std::vector<sf::Vector2i> path = mapp->reconstructPath();
 
     ASSERT_EQ(path.size(), expec.size());
     for(int i=0;i < expec.size();i++)

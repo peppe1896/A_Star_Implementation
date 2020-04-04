@@ -2,8 +2,8 @@
 // Created by giuseppe on 14/03/20.
 //
 
-#ifndef LABPROGRAMMAZIONE_NODE_MAP_H
-#define LABPROGRAMMAZIONE_NODE_MAP_H
+#ifndef LABPROGRAMMAZIONE_NODEMAP_H
+#define LABPROGRAMMAZIONE_NODEMAP_H
 
 #include "Graph.h"
 #include <iostream>
@@ -22,13 +22,6 @@ namespace std {
         }
     };
 }
-
-static std::unordered_map<sf::Vector2i, std::vector<sf::Vector2i>> tiles_graph;
-
-static std::unordered_set<sf::Vector2i> grid_in_map;
-static std::unordered_set<sf::Vector2i> grid_out_map;
-static std::unordered_set<sf::Vector2i> all_grid;
-
 
 template<typename T>
 class PQComparisor
@@ -74,17 +67,23 @@ struct PriorityQueue {
 static sf::Vector2f mousePosView;
 static sf::Vector2i mousePosGrid;
 
-class Node_map : public Subject
+class nodeMap : public Subject
 {
 private:
+    std::unordered_map<sf::Vector2i, std::vector<sf::Vector2i>> tilesGraph;
+
+    std::unordered_set<sf::Vector2i> gridInMap;
+    std::unordered_set<sf::Vector2i> gridOutMap;
+    std::unordered_set<sf::Vector2i> allGrid;
+
     //Mouse info, to put tile
     sf::RenderWindow* window;
 
-    sf::RectangleShape start_goal_box;
-    sf::RectangleShape mouse_pos_box;
-    sf::Font mouse_font;
-    sf::Text mouse_text;
-    sf::Text start_, goal_;
+    sf::RectangleShape boxStartGoal;
+    sf::RectangleShape boxMousePos;
+    sf::Font mouseFont;
+    sf::Text mouseText;
+    sf::Text startText, goalText;
 
     std::string locationMappa;
 
@@ -95,21 +94,21 @@ private:
 
     //Look in vector tiles and get the neighbors of any existing tile
     bool checkIntersect(Tile* rect);
-    std::vector<sf::Vector2i> get_neighbor(sf::Vector2i in);
+    std::vector<sf::Vector2i> getNeighbor(sf::Vector2i in);
 
     //Graph and maps that A* need
-    std::unordered_map<sf::Vector2i, sf::Vector2i> came_from;
-    std::unordered_map<sf::Vector2i, double> cost_so_far;
+    std::unordered_map<sf::Vector2i, sf::Vector2i> cameFrom;
+    std::unordered_map<sf::Vector2i, double> costSoFar;
 
     sf::Vector2i* start;
     sf::Vector2i* goal;
 
-    Tile* get_tile(sf::Vector2i in);
+    Tile* getTile(sf::Vector2i in);
     std::list<Observer*> observers;
 
 public:
-    Node_map(sf::RenderWindow* window,  float gridX, float gridY, std::string& location_mappa);
-    ~Node_map();
+    nodeMap(sf::RenderWindow* window, float gridX, float gridY, std::string& location_mappa);
+    ~nodeMap();
 
     //Map functions
     void addTile();
@@ -117,13 +116,13 @@ public:
 
     std::vector<sf::Vector2i> queue_player;
 private:
-    void create_static_data();
+    void createStaticData();
     bool loadTree();
 
     //A star functions
     double heuristic(sf::Vector2i a, sf::Vector2i b);
 public:
-    void aStar_tile();
+    void aStarTile();
 
     //Draw & update functions
     void update();
@@ -133,10 +132,10 @@ public:
     void setStart();
     void setGoal();
 private:
-    void call_astar();
-    void reset_tile();
+    void callAstar();
+    void resetTile();
 public:
-    std::vector<sf::Vector2i> reconstruct_path();
+    std::vector<sf::Vector2i> reconstructPath();
 
     //Observer methods
     void notify() override;
@@ -148,4 +147,4 @@ public:
     void setGoal_test(sf::Vector2i goal_position = sf::Vector2i(90,15));
     std::list<Observer*> getObservers();
 };
-#endif //LABPROGRAMMAZIONE_NODE_MAP_H
+#endif //LABPROGRAMMAZIONE_NODEMAP_H

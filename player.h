@@ -5,7 +5,7 @@
 #ifndef LABPROGRAMMAZIONE_PLAYER_H
 #define LABPROGRAMMAZIONE_PLAYER_H
 
-#include "Node_map.h"
+#include "nodeMap.h"
 #include "Observer.h"
 #include "entity.h"
 
@@ -13,28 +13,28 @@
 class player : public entity, public Observer
 {
 private:
-    Node_map* mappa;
+    nodeMap* mappa;
 
-    void check_bound();
+    void checkBound();
 
-    sf::RectangleShape player_sprite;
+    sf::RectangleShape playerSprite;
 
-    sf::RenderWindow* windw;
-    sf::Vector2f window_size;
+    sf::RenderWindow* windows;
+    sf::Vector2f windowSize;
 
-    float auto_move_multipler;
-    float manual_move_multipler;
+    float autoMoveMultipler;
+    float manualMoveMultipler;
 
     float velocity;
-    float autovelocity_x;
-    float autovelocity_y;
+    float autoVelocityX;
+    float autoVelocityY;
     float gridSizeX;
     float gridSizeY;
 
     sf::Vector2f position;
 
 public:
-    player(sf::RenderWindow* target, float vel, float gridX, float gridY, Node_map* map_to_pass, float auto_multipler = 4.f, float manual_multipler = 5.f);
+    player(sf::RenderWindow* target, float vel, float gridX, float gridY, nodeMap* map_to_pass, float auto_multipler = 4.f, float manual_multipler = 5.f);
     virtual ~player();
 
     void drawPlayer(sf::RenderTarget* target);
@@ -48,8 +48,8 @@ private:
     std::vector<sf::Vector2f> queue;
     sf::Vector2f* actual_goal;
 
-    void move_player();
-    void create_queue();
+    void movePlayer();
+    void createQueue();
 public:
     void updateAutoPosition();
 

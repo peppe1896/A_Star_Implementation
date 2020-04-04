@@ -16,12 +16,12 @@ protected:
         player_test = test->getPlayer();
         mapp->setStart_test();
         mapp->setGoal_test();
-        mapp->aStar_tile();
-        mapp->reconstruct_path();
+        mapp->aStarTile();
+        mapp->reconstructPath();
     }
 
     Game* test;
-    Node_map* mapp;
+    nodeMap* mapp;
     player* player_test;
     std::array<sf::Vector2i, 22> expec;
     //Array for pre-defined path

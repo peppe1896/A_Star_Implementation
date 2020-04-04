@@ -2,7 +2,7 @@
 #define LABPROGRCLION_GAME_H
 
 #include "player.h"
-#include "Node_map.h"
+#include "nodeMap.h"
 class Game
 {
 protected:
@@ -12,7 +12,7 @@ protected:
     sf::Event event{};
 
     //Mappa
-    Node_map* mappa;
+    nodeMap* mappa;
     std::string indirizzoMappa;
 
     //Background
@@ -20,9 +20,9 @@ protected:
     sf::Texture background_texture;
 
     //Di quanti pixel spostare la mappa verso dx e verso sud?
-    float scalex , scaley;
-    float offsetx, offsety;
-    float gridSize_x, gridSize_y;
+    float scaleX , scaleY;
+    float offsetX, offsetY;
+    float gridSizeX, gridSizeY;
 
     player* hero;
 
@@ -36,7 +36,7 @@ public:
     void run();
 
     //Testing
-    Node_map* getMap() const;
+    nodeMap* getMap() const;
     player* getPlayer() const;
 };
 
