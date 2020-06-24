@@ -7,13 +7,13 @@ Game::Game(int config)
     switch (config)
     {
         case 0:
-            configure_ = "/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Config0.txt";
+            configure_ = "./Assets/Config/Config0.txt";
             break;
         case 1:
-            configure_ = "/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Config1.txt";
+            configure_ = "./Assets/Config/Config1.txt";
             break;
         case 2:
-            configure_ = "/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Config2.txt";
+            configure_ = "./Assets/Config/Config2.txt";
             break;
         default:
             configure_ = "";
@@ -49,10 +49,10 @@ Game::Game(int config)
         offsetx = 1.f;
         offsety = -1.f;
 
-        if(!background_texture.loadFromFile("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Background/back0.png"))
+        if(!background_texture.loadFromFile("./Assets/Background/back0.png"))
             std::cerr << "ERROR::COULD NOT FIND THE MAP";
 
-        indirizzoMappa = "/home/giuseppe/Progetti/Lab_Progr_2/Assets/Config/Mappe/Mappa0.txt";
+        indirizzoMappa = "./Assets/Config/Mappe/Mappa0.txt";
 
         scalex = 0.6757;
         scaley = 0.364967;

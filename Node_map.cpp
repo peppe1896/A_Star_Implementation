@@ -9,7 +9,7 @@
 Node_map::Node_map(sf::RenderWindow* window, float gridX, float gridY, std::string& location_mappa)
 {
     //mouse text & font
-    if (!mouse_font.loadFromFile("/home/giuseppe/Progetti/Lab_Progr_2/Assets/Fonts/mouse_font.ttf"))
+    if (!mouse_font.loadFromFile("./Assets/Fonts/mouse_font.ttf"))
         std::cerr << "ERROR::NODE_MAP::COULD NOT LOAD FONT FOR MOUSE";
     mouse_text.setFont(mouse_font);
     mouse_text.setString("MOUSE POS");
